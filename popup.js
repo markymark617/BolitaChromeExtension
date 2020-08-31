@@ -2,6 +2,15 @@
 document.querySelectorAll(".btnFirstBet").forEach(item => {
     item.addEventListener('click', event => {
         //handle click
+        
+
+        document.querySelectorAll(".btnFirstBet").forEach(item => {
+         
+                item.classList.remove("active");
+                item.style.opacity=1;
+            
+        })
+
         item.style.opacity= 0.4;
         item.classList.add("active");
 
@@ -9,6 +18,49 @@ document.querySelectorAll(".btnFirstBet").forEach(item => {
 
     })
 });
+
+
+document.querySelectorAll(".btnSecondBet").forEach(item => {
+    item.addEventListener('click', event => {
+        //handle click
+        
+
+        document.querySelectorAll(".btnSecondBet").forEach(item => {
+         
+                item.classList.remove("active");
+                item.style.opacity=1;
+            
+        })
+
+        item.style.opacity= 0.4;
+        item.classList.add("active");
+
+        //only 1 can be active at any given time
+
+    })
+});
+
+
+document.querySelectorAll(".btnThirdBet").forEach(item => {
+    item.addEventListener('click', event => {
+        //handle click
+        
+
+        document.querySelectorAll(".btnThirdBet").forEach(item => {
+         
+                item.classList.remove("active");
+                item.style.opacity=1;
+            
+        })
+
+        item.style.opacity= 0.4;
+        item.classList.add("active");
+
+        //only 1 can be active at any given time
+
+    })
+});
+
 
 
 /*
