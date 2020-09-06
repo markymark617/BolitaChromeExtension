@@ -110,7 +110,7 @@
 
 
       .row {
-          padding:5px;
+          padding-left:15px;
       }
       
       /* Clear floats after the columns */
@@ -121,13 +121,18 @@
       }
 
       input[type="text"] {
-        font-size:8px;
+        font-size:15px;
     }
 
     label {
         font-size:10px;
+        font-weight:bold;
     }
 
     .column-left{ float: left; width: 33%; }
 .column-right{ float: right; width: 33%; }
 .column-center{ display: inline-block; width: 33%; }
+
+.column-leftnum{ float: left; width: 30%; padding-left:20px; }
+.column-rightnum{ float: right; width: 30%; padding-left:10px; }
+.column-centernum{ display: inline-block; width: 28%; padding-left:10px; }
