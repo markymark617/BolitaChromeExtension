@@ -17,8 +17,13 @@
         </h1>
     </div>
 
+    <h2>
+        Play Bolita - Select your numbers!
+    </h2>
+
     <div class="modal-content">
-        <p>Play Bolita - Select your numbers!</p>
+        <p>Click 'BET' to bet on an individual number<br>
+           Click 'SUBMIT' to bet on all 3 numbers</p>
     </div>
 
     <div class="ball-icons">
@@ -328,7 +333,7 @@
                         
                 <div class="row">
                     <div class="column-leftnum">
-                        <input type="text" id="firstBetInput" name="firstBetInput" style="width: 10px" readonly="readonly">
+                        <input type="text" id="firstBetInput" name="firstBetInput" style="width: 10px; right:25px;" readonly="readonly">
                     </div>
                     <div class="column-centernum">
                         <input type="text" id="secondBetInput" name="secondBetInput" style="width: 10px" readonly="readonly">
@@ -338,10 +343,24 @@
                     </div>
 
                 </div>
+
+                <div class="row">
+                    <div class="column-leftbtn">
+                        <input type="submit" value="BET" id="fbtnFrstBetSubmit" name="btnFirstBetSubmit" style="width: 35px; padding: 15x 10px; font-size: 7px;"></input>
+                    </div>
+                    <div class="column-centerbtn">
+                        <input type="submit" value="BET" id="btnSecondBetSubmit" name="btnSecondBetSubmit" style="width: 35px; padding: 15x 10px; font-size: 7px;"></input>
+                    </div>
+                    <div class="column-rightbtn">
+                        <input type="submit" value="BET" id="btnThirdBetSubmit" name="btnThirdBetSubmit" style="width: 35px; padding: 15x 10px; font-size: 7px;"></input>
+                    </div>
+
+                </div>
+
                     <br>
                     <div class="row">
                         <div class="column-center">
-                            <input type="submit" value="Submit" style="padding: 15x 10px;">
+                            <input type="submit" id="threeNumSubmit" value="Submit" style="padding: 15x 10px;">
                             <br><br>
                         </div>
                     </div>
@@ -352,25 +371,19 @@
     <div class="modal-icons">
         <div class="flex-container">
             <div class="flex">
-                <a href="https://www.google.com" target="_blank">
+                <a href="https://www.thedailybeast.com/bolita-where-mom-and-pop-meet-the-mafia" target="_blank">
                     <i class="fa fa-google"></i>
                 </a>
             </div>
 
             <div class="flex">
-                <a href="https://www.youtube.com" target="_blank">
+                <a href="https://www.youtube.com/watch?v=2zygB9rk2uU" target="_blank">
                     <i class="fa fa-youtube"></i>
                 </a>
             </div>
 
             <div class="flex">
-                <a href="https://www.twitter.com" target="_blank">
-                    <i class="fa fa-twitter"></i>
-                </a>
-            </div>
-
-            <div class="flex">
-                <a href="https://www.github.com" target="_blank">
+                <a href="https://github.com/markymark617/BolitaChromeExtension" target="_blank">
                     <i class="fa fa-github"></i>
                 </a>
             </div>
