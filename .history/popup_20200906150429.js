@@ -3,7 +3,7 @@ document.querySelectorAll(".btnFirstBet").forEach(item => {
     item.addEventListener('click', event => {
         //handle click
         
-        //only 1 can be active at any given time - remove all other active
+
         document.querySelectorAll(".btnFirstBet").forEach(item => {
          
                 item.classList.remove("active");
@@ -14,7 +14,7 @@ document.querySelectorAll(".btnFirstBet").forEach(item => {
         item.style.opacity= 0.4;
         item.classList.add("active");
 
-        document.getElementById("firstBetInput").value= item.value;
+        //only 1 can be active at any given time
 
     })
 });
@@ -24,7 +24,7 @@ document.querySelectorAll(".btnSecondBet").forEach(item => {
     item.addEventListener('click', event => {
         //handle click
         
-        //only 1 can be active at any given time - remove all other active
+
         document.querySelectorAll(".btnSecondBet").forEach(item => {
          
                 item.classList.remove("active");
@@ -35,7 +35,7 @@ document.querySelectorAll(".btnSecondBet").forEach(item => {
         item.style.opacity= 0.4;
         item.classList.add("active");
 
-        document.getElementById("secondBetInput").value= item.value;
+        //only 1 can be active at any given time
 
     })
 });
@@ -45,7 +45,7 @@ document.querySelectorAll(".btnThirdBet").forEach(item => {
     item.addEventListener('click', event => {
         //handle click
         
-        //only 1 can be active at any given time - remove all other active
+
         document.querySelectorAll(".btnThirdBet").forEach(item => {
          
                 item.classList.remove("active");
@@ -56,12 +56,16 @@ document.querySelectorAll(".btnThirdBet").forEach(item => {
         item.style.opacity= 0.4;
         item.classList.add("active");
 
-        document.getElementById("thirdBetInput").value= item.value;
+        //only 1 can be active at any given time
 
     })
 });
 
 
+function setFirstBet(value){
+    document.getElementById("firstBetInput").value= value;
+   
+}
 
 
 /*
@@ -95,12 +99,6 @@ document.getElementsByClassName(".btnFirstBet").forEach(item => {
 })
 
 
-
-
-function setFirstBet(value){
-    document.getElementById("firstBetInput").value= value;
-   
-}
 
  document.getElementById("totalValue").innerHTML= "Total price: $" + 500*value;
 

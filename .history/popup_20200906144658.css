@@ -110,7 +110,7 @@
 
 
       .row {
-          padding:5px;
+          padding:10px;
       }
       
       /* Clear floats after the columns */
@@ -121,13 +121,13 @@
       }
 
       input[type="text"] {
-        font-size:8px;
+        font-size:5px;
     }
 
     label {
         font-size:10px;
     }
 
-    .column-left{ float: left; width: 33%; }
-.column-right{ float: right; width: 33%; }
-.column-center{ display: inline-block; width: 33%; }
+    .column-left{ float: left; width: 32%; }
+.column-right{ float: right; width: 32%; }
+.column-center{ display: inline-block; width: 32%; }

@@ -108,9 +108,14 @@
         padding: 5px;
     }
 
+    .column {
+        float: left;
+        width: 33.33%;
+        padding: 2px;
+      }
 
       .row {
-          padding:5px;
+          padding:10px;
       }
       
       /* Clear floats after the columns */
@@ -121,13 +126,17 @@
       }
 
       input[type="text"] {
-        font-size:8px;
+        font-size:5px;
+    }
+
+    input[type="submit"] {
+        padding:10px;
     }
 
     label {
         font-size:10px;
     }
 
-    .column-left{ float: left; width: 33%; }
-.column-right{ float: right; width: 33%; }
-.column-center{ display: inline-block; width: 33%; }
+    .column-left{ float: left; width: 32%; }
+.column-right{ float: right; width: 32%; }
+.column-center{ display: inline-block; width: 32%; }
