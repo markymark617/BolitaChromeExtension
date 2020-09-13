@@ -64,11 +64,31 @@ document.querySelectorAll(".btnThirdBet").forEach(item => {
 if (typeof web3 !== 'undefined') {
     web3 = new Web3(web3.currentProvider);
 } else {
-    web3 = new Web3( new Web3.providers.HttpProviders("http://localhost:8545"));
+    web3 = new Web3( new Web3.providers.HttpProvider("http://localhost:8545"));
 }
 
 web3.eth.defaultAccount = web3.eth.accounts[0];
 
+//contract abi
+//var bolitaContract = web3.eth.contract(asfasdfasdf);
+
+//deployed address that will be used - from remix for testing web3 injection
+//var bolitaAddress = bolitaContract.at(asdfasdfasdf)
+//console.log(bolitaAddress)
+
+/*bolitaAddress.setBet(function(error,result) {
+    if(!error) {
+        $("#firstBetInput").html(result[0]+' (' +result[1]');
+    } else {
+        console.log(error);
+    }
+});
+
+$("#buttonIDTHATISTARGETTED").click(function() {
+    bolitaAddress.setBet($("#firstBetInput").val(),$("#secondBetInput").val(),$("#thirdBetInput").val());
+});
+
+*/
 
 /*
 
