@@ -39,7 +39,8 @@
         padding-left:35px;
         height:10px;
         color: #2f5876;
-        padding-top:15px;
+        padding-top:5px;
+        padding-bottom: 5px;
     }
     h4 {
         font-family: 'Menlo', monospace;
