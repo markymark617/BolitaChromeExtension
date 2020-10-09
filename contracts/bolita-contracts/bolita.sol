@@ -7,8 +7,27 @@ import "../common-contracts/AccessControl.sol";
 contract bolita is AccessControl {
     using SafeMath for uint128;
     using SafeMath for uint16;
+    using SafeMath for uint8;
     
+    uint8 winningNum;
+    uint8[3] memory winningDigits;
+
+    //TODO add tokenIndex one day
+    struct Bet {
+        address player;
+        uint8 betType;
+        uint8 firstNumBetOn;
+        uint8 secondNumBetOn;
+        uint8 thirdNumBetOn;
+        uint128 betAmount;
+    }
+
     enum BetType { SINGLENUM, DOUBLENUM, TRIPLENUM }
+        
+    Bet[] public bolitaBets;
+
+    mapping(address => bolitaBets[]) bolitaTickets;
+    address[] winners;
     
     //TODO add treasury index + token functionality
     
@@ -28,37 +47,33 @@ contract bolita is AccessControl {
     );
     
     //TODO add tokenIndex one day
-    struct Bet {
-        address player;
-        uint8 betType;
-        uint16 numberBetOn;
-        uint128 betAmount;
-    }
-    
-    Bet[] public bolitaBets;
-    
-    //TODO add tokenIndex one day
     function createBet(
         address _player,
         uint8 _betType,
-        uint16 _numberBetOn,
+        uint8 _firstNumBetOn,
+        uint8 _secondNumBetOn,
+        uint8 _thirdNumBetOn,
         uint128 _betAmount
     ) 
         external
         onlyCEO 
     {
-        bet(
+        singleBet(
             _player,
             _betType,
-            _numberBetOn,
+            _firstNumBetOn,
+            _secondNumBetOn,
+            _thirdNumBetOn,
             _betAmount
         );
     }
     //add tokenIndex one day
-    function bet(
+    function singleBet(
         address _player,
         uint8 _betType,
-        uint16 _numberBetOn,
+        uint8 _firstNumBetOn,
+        uint8 _secondNumBetOn,
+        uint8 _thirdNumBetOn,
         uint128 _betAmount
     ) 
         internal
@@ -66,13 +81,32 @@ contract bolita is AccessControl {
         bolitaBets.push(Bet({
             player: _player,
             betType: _betType,
-            numberBetOn: _numberBetOn,
+            firstNumBetOn: _firstNumBetOn,
+            secondNumBetOn: _secondNumBetOn,
+            thirdNumBetOn: _thirdNumBetOn,
             betAmount: _betAmount
         }));
     }
     
+    /*    //add tokenIndex one day
+    function tripleBet() 
+    */
     
-    
+    function setWinningNumber(
+        uint8 firstWinningNum,
+        uint8 secondWinningNum,
+        uint8 thirdWinningNum
+    )
+    external
+    onlyCEO
+    {
+        winningDigits.push(
+            firstWinningNum,
+            secondWinningNum,
+            thirdWinningNum
+        );
+    }
+
     
     //TODO rework to remove branching, maybe have a mapping of some kind?
     function getPayoutForType(
