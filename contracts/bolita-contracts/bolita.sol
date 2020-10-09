@@ -1,10 +1,10 @@
 //SPDX-License-Identifier: -U+24B7-Ⓑ-
 pragma solidity ^0.7.0;
 
-import "../../common-contracts/SafeMath.sol";
-import "../../common-contracts/AccessController.sol";
+import "../common-contracts/SafeMath.sol";
+import "../common-contracts/AccessControl.sol";
 
-contract bolita is AccessController {
+contract bolita is AccessControl {
     using SafeMath for uint128;
     using SafeMath for uint16;
     
