@@ -4,19 +4,62 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="popup.css">
     <title>Results</title>
+    <script src="jquery-3.5.1.min.js"></script>
 </head>
 <body>
+
     <div id="results"></div>
     <a href="popup.html">Back to main</a>
-    <script>
-        const resultsList=document.getElementById('results')
-        new URLSearchParams(window.location.search).forEach((value,
-        name) => {
-            resultsList.append('${name} ${value}')
-            resultsList.append(document.createElement('br'))
-        })
-    </script>
 
+
+
+    <div class="modal-header">
+        <h1 class="logo">
+            <img src="images/bolita_logo.png" alt="Bolita_Launcher_logo" class="logo-icon"> Bolita <span class="version">(1.0.0)</span>
+        </h1>
+        <h2>
+            Play Bolita - Select your numbers!
+        </h2>
+        <h2 class="finalNumbers" id="finalNumbersID"></h2>
+    </div>
+
+
+    <div class="row">
+        <div class="column-center">
+            <input type="submit" id="GetLatestNumbers" value="Get the latest winning numbers!" style="padding: 15x 10px;">
+            <br><br>
+        </div>
+    </div>
+
+    <!--div class="row">
+        <div class="column-center">
+            <input type="submit" id="btnSendNotification" value="Send Notification" style="padding: 15x 10px;">
+            <br><br>
+        </div>
+    </div-->
+
+    <div class="row">
+        <div class="column-center">
+            <input type="submit" id="btnGetCNNNumbers" value="GET CNN NUMBERS" style="padding: 15x 10px;">
+            <br><br>
+        </div>
+    </div>
+
+
+    <p id="latestCaseNum" value='0'>0</p>
+
+    <ul class="content">
+        <!-- inserted through popup.js AJAX -->
+        </ul>
+        <p id="alert">
+        <!-- inserted through popup.js -->
+        </p>
+
+    <div id="time"> </div>
+
+    <script src="popup.js"></script>
+    <script src="background.js"></script>
 </body>
 </html>

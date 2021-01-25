@@ -1,0 +1,14 @@
+{
+    "name": "Bolita Launcher",
+    "version": "1.0.0",
+    "description": "Bolita",
+    "main": "index.js",
+    "keywords": [],
+    "author": "Mark F",
+    "homepage": "https://www.google.com",
+    "publisher": "ME",
+    "license": "ISC",
+    "dependencies": {
+      "@types/chrome": "0.0.106"
+    }
+  }
