@@ -22,10 +22,10 @@ contract AccessController {
     constructor() 
     {
         ownerAddress = msg.sender;
-       isAdmin[ownerAddress] = true;
+        isAdmin[ownerAddress] = true;
        
-       emit OwnerSet(ownerAddress);
-       emit AddedAdmin(ownerAddress);
+        emit OwnerSet(ownerAddress);
+        emit AddedAdmin(ownerAddress);
     }
 
     modifier onlyOwner()
