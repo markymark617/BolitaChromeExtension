@@ -154,10 +154,24 @@ library SafeMath {
 }
 
 
+//one day we will track and make accessible all previous bet data
+//contract BolitaHistory
 
 
+contract BolitaHelper {
 
-contract Bolita is AccessController {
+    //function to prevent 1 address making the same bet
+    function validateBet(address _bolitaPlayer, uint16 _numBetOn)
+    internal
+    {
+        
+    }
+
+//on makebet(), transfer in the betamounts
+    //function to close and settle all bets
+}
+
+contract Bolita is AccessController, BolitaHelper {
     using SafeMath for uint256;
     using SafeMath for uint16;
     // using SafeMath for uint8;
@@ -169,7 +183,9 @@ contract Bolita is AccessController {
     
     enum BetType {FIRSTDIGIT, SECONDDIGIT, THIRDDIGIT, ALLTHREE}
 
-    //BET AMOUNT LOCKED TO .005
+    //BET AMOUNT LOCKED TO .005 ETH = 5 Finney
+    uint256 defaultBetAmountInt = 5000000000000000 wei;
+    address[] bolitaPlayers;
     
     
     event WinningNumber(uint16 winningNum);
@@ -178,11 +194,21 @@ contract Bolita is AccessController {
     event ThirdDigitWinningNumber(uint8 winningNumThirdDigit);
 
     struct Bet {
-        address player;
         uint16 numberBetOn;
         BetType betTypeOfBet;
+    }
 
-      //  uint128 betAmount;
+    mapping(address => Bet) playerBets;
+
+
+    //move up to BolitaHelper
+    modifier defaultBetAmount(uint256 _betAmount)
+    {
+        require(
+            defaultBetAmountInt == _betAmount,
+            "Bet Amount must be .005 ETH"
+        );
+        _;
     }
     
     //TODO: upgrade with SafeMath
@@ -195,6 +221,8 @@ contract Bolita is AccessController {
             "BOLITA: invalid winning number"
         );
         
+        //add logic for closing current/"previous" bets
+
         emit WinningNumber(_newWinningNum);
         
         latestWinningFirstDigit = uint8(_newWinningNum/(100));
@@ -207,14 +235,37 @@ contract Bolita is AccessController {
         emit ThirdDigitWinningNumber(latestWinningThirdDigit);
         
     }
-    
-    // /**
-    //  * uint8 betType; 
-    //  * 0 = ALLTYPE
-    //  * 1 = FIRSTDIGIT
-    //  * 2 = SECONDDIGIT
-    //  * 3 = THIRDDIGIT 
-    //  * /
+
+    function betOnFirstDigit(address _player, uint8 _numberBetOn)
+        external
+    {
+        //some checks?
+        makeBet(uint16(_numberBetOn), BetType.FIRSTDIGIT);
+    }
+    function betOnSecondDigit(uint8 _numberBetOn)
+        external
+    {
+        
+    }
+    function betOnThirdDigit(uint8 _numberBetOn)
+        external
+    {
+        
+    }
+    function betOnAllThree(uint16 _numberBetOn)
+        external
+    {
+        
+    }
+
+    function makeBet(uint16 numberBetOn, BetType _betType)
+        public
+        payable
+        defaultBetAmount(uint256(msg.value))
+    {
+
+    }
+
 
 
 }
