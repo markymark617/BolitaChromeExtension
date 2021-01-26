@@ -177,9 +177,9 @@ contract Bolita is AccessController, BolitaHelper {
     // using SafeMath for uint8;
 
     uint16 latestWinningNumber;
-    uint8 latestWinningFirstDigit;
-    uint8 latestWinningSecondDigit;
-    uint8 latestWinningThirdDigit;
+    uint16 latestWinningFirstDigit;
+    uint16 latestWinningSecondDigit;
+    uint16 latestWinningThirdDigit;
     
     enum BetType {FIRSTDIGIT, SECONDDIGIT, THIRDDIGIT, ALLTHREE}
 
@@ -189,9 +189,9 @@ contract Bolita is AccessController, BolitaHelper {
     
     
     event WinningNumber(uint16 winningNum);
-    event FirstDigitWinningNumber(uint8 winningNumFirstDigit);
-    event SecondDigitWinningNumber(uint8 winningNumSecondDigit);
-    event ThirdDigitWinningNumber(uint8 winningNumThirdDigit);
+    event FirstDigitWinningNumber(uint16 winningNumFirstDigit);
+    event SecondDigitWinningNumber(uint16 winningNumSecondDigit);
+    event ThirdDigitWinningNumber(uint16 winningNumThirdDigit);
 
     struct Bet {
         uint16 numberBetOn;
@@ -225,29 +225,30 @@ contract Bolita is AccessController, BolitaHelper {
 
         emit WinningNumber(_newWinningNum);
         
-        latestWinningFirstDigit = uint8(_newWinningNum/(100));
+        latestWinningFirstDigit = _newWinningNum/(100);
         emit FirstDigitWinningNumber(latestWinningFirstDigit);
                 
-        latestWinningSecondDigit = uint8((_newWinningNum/(10))%10);
+        latestWinningSecondDigit = ((_newWinningNum/10)%10);
         emit SecondDigitWinningNumber(latestWinningSecondDigit);
                 
-        latestWinningThirdDigit = uint8(_newWinningNum%10);
+        latestWinningThirdDigit = _newWinningNum%10;
         emit ThirdDigitWinningNumber(latestWinningThirdDigit);
         
     }
 
-    function betOnFirstDigit(address _player, uint8 _numberBetOn)
+    function betOnFirstDigit(address _player, uint16 _numberBetOn)
         external
+        payable
     {
         //some checks?
-        makeBet(uint16(_numberBetOn), BetType.FIRSTDIGIT);
+        makeBet(_player, _numberBetOn, BetType.FIRSTDIGIT);
     }
-    function betOnSecondDigit(uint8 _numberBetOn)
+    function betOnSecondDigit(uint16 _numberBetOn)
         external
     {
         
     }
-    function betOnThirdDigit(uint8 _numberBetOn)
+    function betOnThirdDigit(uint16 _numberBetOn)
         external
     {
         
@@ -258,7 +259,11 @@ contract Bolita is AccessController, BolitaHelper {
         
     }
 
-    function makeBet(uint16 numberBetOn, BetType _betType)
+    function makeBet(
+        address _playerAddress,
+        uint16 numberBetOn,
+        BetType _betType
+    )
         public
         payable
         defaultBetAmount(uint256(msg.value))
