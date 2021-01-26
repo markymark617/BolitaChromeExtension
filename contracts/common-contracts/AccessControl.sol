@@ -1,60 +1,114 @@
-pragma solidity ^0.7.0;
+// SPDX-License-Identifier: MIT
+
+pragma solidity ^0.8.0;
 
 contract AccessController {
 
-    address public ceoAddress;
-    address public workerAddress;
-    address[] workerAddresses; 
+    address public ownerAddress;
+    address public adminAddress;
 
-    event CEOSet(address newCEO);
-    event WorkerSet(address newWorker);
+    bool public paused = false;
+    
+    //owner is included as an admin
+    mapping (address => bool) isAdmin;
 
+    event OwnerSet(address newOwnerAddress);
+    event RemovedAdmin(address prevAdminAddress);
+    event AddedAdmin(address newAdminAddress);
 
-    constructor() public {
-        ceoAddress = msg.sender;
-        workerAddress = msg.sender;
-        emit CEOSet(ceoAddress);
-        emit WorkerSet(workerAddress);
+    event Paused();
+    event Unpaused();
+
+    constructor() 
+    {
+        ownerAddress = msg.sender;
+        isAdmin[ownerAddress] = true;
+       
+        emit OwnerSet(ownerAddress);
+        emit AddedAdmin(ownerAddress);
     }
 
-    modifier onlyCEO() {
-        require(msg.sender == ceoAddress,
-            'AccessControl: CEO access denied');
-        _;
-    }
-
-    modifier onlyWorker() {
-        bool isWorker;
-        for(uint i=0; i < workerAddresses.length;i++) {
-             if(msg.sender == workerAddresses[i]) {
-                isWorker=true;
-             }
-        }            
-        require(isWorker,
-        'AccessControl: worker access denied');
-        _;
-    }
-
-    function setCEO(address _newCEO) public onlyCEO {
+    modifier onlyOwner()
+    {
         require(
-            _newCEO != address(0x0),
+            msg.sender == ownerAddress,
+            'AccessControl: msg.sender must be owner'
+        );
+        _;
+    }
+
+    modifier onlyAdmin()
+    {
+        require(
+            isAdmin[msg.sender] == true,
+            'AccessControl: msg.sender must be admin'
+        );
+        _;
+    }
+
+    modifier whenNotPaused()
+    {
+        require(
+            !paused,
+            'AccessControl: currently paused'
+        );
+        _;
+    }
+
+    modifier whenPaused
+    {
+        require(
+            paused,
+            'AccessControl: currenlty not paused'
+        );
+        _;
+    }
+
+    function updateOwner(address _newOwnerAddress) 
+        public
+        onlyOwner
+    {
+        require(
+            _newOwnerAddress != address(0x0),
             'AccessControl: invalid CEO address'
         );
-        ceoAddress = _newCEO;
-        emit CEOSet(ceoAddress);
+        ownerAddress = _newOwnerAddress;
+        emit OwnerSet(ownerAddress);
     }
 
-    function setWorker(address _newWorker) external {
+    function setAdmin(address _newAdminAddress)
+        public
+        onlyOwner
+    {
         require(
-            _newWorker != address(0x0),
+            _newAdminAddress != address(0x0),
             'AccessControl: invalid worker address'
         );
-        require(
-            msg.sender == ceoAddress || msg.sender == workerAddress,
-            'AccessControl: invalid worker address'
-        );
-        workerAddress = _newWorker;
-        emit WorkerSet(workerAddress);
+        //remove prev admin
+        isAdmin[adminAddress] = false;
+        emit RemovedAdmin(adminAddress);
+        
+        //set new admin + add to mapping
+        adminAddress = _newAdminAddress;
+        isAdmin[adminAddress] == true;
+        emit AddedAdmin(adminAddress);
     }
 
+    function pause()
+        external
+        onlyAdmin
+        whenNotPaused
+    {
+        paused = true;
+        emit Paused();
+    }
+
+    function unpause()
+        external
+        onlyAdmin
+        whenPaused
+    {
+        paused = false;
+        emit Unpaused();
+    }
 }
