@@ -304,6 +304,13 @@ contract Bolita is AccessController, BolitaHelper {
         
     }
 
+    function withdrawBalanceFromContract(uint256 _amount)
+        public
+        onlyOwner
+    {
+        payable(ownerAddress).transfer(_amount);
+    }
+
 
 
 }
