@@ -211,6 +211,26 @@ contract Bolita is AccessController, BolitaHelper {
         _;
     }
     
+    //fallback function
+        constructor()  payable {
+        // richest = msg.sender;
+        // mostSent = msg.value;
+    }
+    
+    fallback() external payable { 
+        //console.log("FALLBACK");
+    }
+    
+    
+    
+    function sendETHtoContract()
+        external
+        payable
+    {
+        payable(address(this)).transfer(msg.value);
+    }
+    
+    
     //TODO: upgrade with SafeMath
     function setWinningNumber(uint16 _newWinningNum)
         public
@@ -239,8 +259,10 @@ contract Bolita is AccessController, BolitaHelper {
     function betOnFirstDigit(address _player, uint16 _numberBetOn)
         external
         payable
+        
     {
         //some checks?
+
         makeBet(_player, _numberBetOn, BetType.FIRSTDIGIT);
     }
     function betOnSecondDigit(uint16 _numberBetOn)
@@ -268,7 +290,18 @@ contract Bolita is AccessController, BolitaHelper {
         payable
         defaultBetAmount(uint256(msg.value))
     {
-
+        payable(address(this)).transfer(msg.value);
+        
+    }
+    
+    
+    function getContractValue()
+        external
+        view
+        returns(uint256)
+    {
+        return address(this).balance;
+        
     }
 
 
