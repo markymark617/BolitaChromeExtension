@@ -160,12 +160,25 @@ library SafeMath {
 
 contract BolitaHelper {
 
+   /*
+   
+   // enum BetType {FIRSTDIGIT, SECONDDIGIT, THIRDDIGIT, ALLTHREE}
+    struct Bet {
+        uint16 numberBetOn;
+     //   BetType betTypeOfBet;
+    }
+
+    mapping(address => Bet) playerBets;
+    
     //function to prevent 1 address making the same bet
     function validateBet(address _bolitaPlayer, uint16 _numBetOn)
     internal
     {
         
     }
+    
+    */
+    
 
 //on makebet(), transfer in the betamounts
     //function to close and settle all bets
@@ -183,8 +196,11 @@ contract Bolita is AccessController, BolitaHelper {
     
     enum BetType {FIRSTDIGIT, SECONDDIGIT, THIRDDIGIT, ALLTHREE}
 
+
     //BET AMOUNT LOCKED TO .005 ETH = 5 Finney
     uint256 defaultBetAmountInt = 5000000000000000 wei;
+    uint256 singleDigitWinnings = 5 * (defaultBetAmountInt);
+    uint256 allDigitWinnings = 50 * (defaultBetAmountInt);
     address[] bolitaPlayers;
     
     
@@ -192,13 +208,21 @@ contract Bolita is AccessController, BolitaHelper {
     event FirstDigitWinningNumber(uint16 winningNumFirstDigit);
     event SecondDigitWinningNumber(uint16 winningNumSecondDigit);
     event ThirdDigitWinningNumber(uint16 winningNumThirdDigit);
+    
+    event winners(address[] winners, BetType _betType);
+    
+    event GotPaid(address _winner);
+    
+    
+    event TestEvent(address[] winners);
+    
+    //get list of addresses that bet on the winning number, uint16 is used for first, second, third, and all digits
+    mapping(uint16 => mapping(BetType => address[])) mapOfBets;
 
-    struct Bet {
-        uint16 numberBetOn;
-        BetType betTypeOfBet;
-    }
-
-    mapping(address => Bet) playerBets;
+    mapping(address => bool) hasPlayerBetAlready;
+    
+    //FOR USE WHEN A PLAYER WINS, BUT THERE IS NO ETH AVAILABLE
+    mapping(address => uint256) amountOwedToPlayersForReimbursement;
 
 
     //move up to BolitaHelper
@@ -211,10 +235,18 @@ contract Bolita is AccessController, BolitaHelper {
         _;
     }
     
+    modifier hasAddressBetAlready(address _player)
+    {
+        require(
+            hasPlayerBetAlready[_player] != true,
+            "CANNOT EXCEED 1 BET PER DAY"
+        );
+        _;
+    }
+    
     //fallback function
         constructor()  payable {
-        // richest = msg.sender;
-        // mostSent = msg.value;
+
     }
     
     fallback() external payable { 
@@ -230,6 +262,43 @@ contract Bolita is AccessController, BolitaHelper {
         payable(address(this)).transfer(msg.value);
     }
     
+    function payWinners(address[] memory _winners)
+        internal
+       // payable
+    {
+        for(uint i = 0; i<_winners.length; i++) {
+            
+        }
+    }
+    
+    function getWinners(
+        uint16 _winningNumber,
+        uint16 _firstWinningDigit,
+        uint16 _secondWinningDigit,
+        uint16 _thirdWinningDigit
+    )
+        internal
+        returns(
+            address[] memory firstDigitWinners,
+            address[] memory secondDigitWinners,
+            address[] memory thirdDigitWinners,
+            address[] memory allDigitWinners
+        )
+    {
+        
+        
+        firstDigitWinners = mapOfBets[_firstWinningDigit][BetType.FIRSTDIGIT];
+        secondDigitWinners = mapOfBets[_secondWinningDigit][BetType.SECONDDIGIT];
+        thirdDigitWinners = mapOfBets[_thirdWinningDigit][BetType.THIRDDIGIT];
+        allDigitWinners = mapOfBets[_winningNumber][BetType.ALLTHREE];
+        
+        emit winners(firstDigitWinners, BetType.FIRSTDIGIT);
+        emit winners(secondDigitWinners, BetType.SECONDDIGIT);
+        emit winners(thirdDigitWinners, BetType.THIRDDIGIT);
+        emit winners(allDigitWinners, BetType.ALLTHREE);
+        
+       // winningPlayers.push(mapOfBets[_winningNumber]);
+    }
     
     //TODO: upgrade with SafeMath
     function setWinningNumber(uint16 _newWinningNum)
@@ -240,8 +309,6 @@ contract Bolita is AccessController, BolitaHelper {
             _newWinningNum <= 999,
             "BOLITA: invalid winning number"
         );
-        
-        //add logic for closing current/"previous" bets
 
         emit WinningNumber(_newWinningNum);
         
@@ -254,8 +321,35 @@ contract Bolita is AccessController, BolitaHelper {
         latestWinningThirdDigit = _newWinningNum%10;
         emit ThirdDigitWinningNumber(latestWinningThirdDigit);
         
+        address[] memory firstDigitWinners;
+        address[] memory secondDigitWinners;
+        address[] memory thirdDigitWinners;
+        address[] memory allDigitWinners;
+        
+        (firstDigitWinners,
+            secondDigitWinners,
+            thirdDigitWinners,
+            allDigitWinners
+        ) =  
+        getWinners(
+            _newWinningNum,
+            latestWinningFirstDigit,
+            latestWinningSecondDigit,
+            latestWinningThirdDigit
+        );
+        
+        emit TestEvent(firstDigitWinners);
+        emit TestEvent(secondDigitWinners);
+        emit TestEvent(thirdDigitWinners);
+        emit TestEvent(allDigitWinners);
+        
+        //add logic for closing current/"previous" bets
+        //settleWinningBets
+        //clear data
+        
     }
 
+    //@dev number length is enforced at UI level. This function is mapped to the submit button for the valid field
     function betOnFirstDigit(address _player, uint16 _numberBetOn)
         external
         payable
@@ -265,20 +359,32 @@ contract Bolita is AccessController, BolitaHelper {
 
         makeBet(_player, _numberBetOn, BetType.FIRSTDIGIT);
     }
-    function betOnSecondDigit(uint16 _numberBetOn)
+    //@dev number length is enforced at UI level
+    function betOnSecondDigit(address _player, uint16 _numberBetOn)
         external
+        payable
     {
-        
+        //some checks?
+
+        makeBet(_player, _numberBetOn, BetType.SECONDDIGIT);
     }
-    function betOnThirdDigit(uint16 _numberBetOn)
+    //@dev number length is enforced at UI level
+    function betOnThirdDigit(address _player, uint16 _numberBetOn)
         external
+        payable
     {
-        
+        //some checks?
+
+        makeBet(_player, _numberBetOn, BetType.THIRDDIGIT);
     }
-    function betOnAllThree(uint16 _numberBetOn)
+    //@dev number length is enforced at UI level
+    function betOnAllThree(address _player, uint16 _numberBetOn)
         external
+        payable
     {
-        
+        //some checks?
+
+        makeBet(_player, _numberBetOn, BetType.ALLTHREE);   
     }
 
     function makeBet(
@@ -289,9 +395,13 @@ contract Bolita is AccessController, BolitaHelper {
         public
         payable
         defaultBetAmount(uint256(msg.value))
+        hasAddressBetAlready(_playerAddress)
     {
-        payable(address(this)).transfer(msg.value);
         
+        mapOfBets[numberBetOn][_betType].push(_playerAddress);
+        hasPlayerBetAlready[_playerAddress] = true;
+        
+        payable(address(this)).transfer(msg.value);
     }
     
     
