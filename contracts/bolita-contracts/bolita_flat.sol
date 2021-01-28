@@ -199,6 +199,8 @@ contract Bolita is AccessController, BolitaHelper {
 
     //BET AMOUNT LOCKED TO .005 ETH = 5 Finney
     uint256 defaultBetAmountInt = 5000000000000000 wei;
+    
+    //TODO use safemath
     uint256 singleDigitWinnings = 5 * (defaultBetAmountInt);
     uint256 allDigitWinnings = 50 * (defaultBetAmountInt);
     address[] bolitaPlayers;
@@ -262,12 +264,21 @@ contract Bolita is AccessController, BolitaHelper {
         payable(address(this)).transfer(msg.value);
     }
     
-    function payWinners(address[] memory _winners)
-        internal
-       // payable
+    function payWinners(address[] memory _winners, uint256 _winningAmount)
+        public
+        onlyAdmin
+        payable
     {
+        
         for(uint i = 0; i<_winners.length; i++) {
+            require(
+                _winners[i] != address(0x0),
+                "CANNOT USE TEST ACCOUNTS"
+            );
             
+            payable(_winners[i]).transfer(_winningAmount);
+            
+            emit GotPaid(_winners[i]);
         }
     }
     
@@ -301,8 +312,10 @@ contract Bolita is AccessController, BolitaHelper {
     }
     
     //TODO: upgrade with SafeMath
+    //TODO: change from memory to calldata so public can be external and lower the gas
     function setWinningNumber(uint16 _newWinningNum)
         public
+        payable
         onlyAdmin
     {
         require(
@@ -338,6 +351,28 @@ contract Bolita is AccessController, BolitaHelper {
             latestWinningThirdDigit
         );
         
+        
+        payWinners(
+            firstDigitWinners,
+            singleDigitWinnings
+        );
+        
+        payWinners(
+            secondDigitWinners,
+            singleDigitWinnings
+        );
+        
+        payWinners(
+            thirdDigitWinners,
+            singleDigitWinnings
+        );
+        
+        payWinners(
+            firstDigitWinners,
+            allDigitWinnings
+        );
+        
+        
         emit TestEvent(firstDigitWinners);
         emit TestEvent(secondDigitWinners);
         emit TestEvent(thirdDigitWinners);
@@ -345,6 +380,11 @@ contract Bolita is AccessController, BolitaHelper {
         
         //add logic for closing current/"previous" bets
         //settleWinningBets
+        
+        
+        //add clear data functions here
+        
+        
         //clear data
         
     }
