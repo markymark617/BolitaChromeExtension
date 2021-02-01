@@ -157,10 +157,10 @@ library SafeMath {
 //one day we will track and make accessible all previous bet data
 //contract BolitaHistory
 
-
+/*
 contract BolitaHelper {
 
-   /*
+   
    
    // enum BetType {FIRSTDIGIT, SECONDDIGIT, THIRDDIGIT, ALLTHREE}
     struct Bet {
@@ -177,14 +177,20 @@ contract BolitaHelper {
         
     }
     
-    */
+    
     
 
 //on makebet(), transfer in the betamounts
     //function to close and settle all bets
 }
+*/
 
-contract Bolita is AccessController, BolitaHelper {
+
+
+//will inherit BolitaHelper for snapshot before deleting, getWinners, payWinners, etc
+//to make Bolita more simple: just makes bets and sets winning number
+
+contract Bolita is AccessController {
     using SafeMath for uint256;
     using SafeMath for uint16;
     // using SafeMath for uint8;
@@ -203,7 +209,7 @@ contract Bolita is AccessController, BolitaHelper {
     //TODO use safemath
     uint256 singleDigitWinnings = 5 * (defaultBetAmountInt);
     uint256 allDigitWinnings = 50 * (defaultBetAmountInt);
-    address[] bolitaPlayers;
+    //address[] bolitaPlayers;
     
     
     event WinningNumber(uint16 winningNum);
@@ -297,7 +303,6 @@ contract Bolita is AccessController, BolitaHelper {
         )
     {
         
-        
         firstDigitWinners = mapOfBets[_firstWinningDigit][BetType.FIRSTDIGIT];
         secondDigitWinners = mapOfBets[_secondWinningDigit][BetType.SECONDDIGIT];
         thirdDigitWinners = mapOfBets[_thirdWinningDigit][BetType.THIRDDIGIT];
@@ -372,11 +377,11 @@ contract Bolita is AccessController, BolitaHelper {
             allDigitWinnings
         );
         
-        
-        emit TestEvent(firstDigitWinners);
-        emit TestEvent(secondDigitWinners);
-        emit TestEvent(thirdDigitWinners);
-        emit TestEvent(allDigitWinners);
+    //TO BE REMOVED:        
+        // emit TestEvent(firstDigitWinners);
+        // emit TestEvent(secondDigitWinners);
+        // emit TestEvent(thirdDigitWinners);
+        // emit TestEvent(allDigitWinners);
         
         //add logic for closing current/"previous" bets
         //settleWinningBets
@@ -395,7 +400,10 @@ contract Bolita is AccessController, BolitaHelper {
         payable
         
     {
-        //some checks?
+        require(
+            (_numberBetOn/10) < 1,
+            "Must be single digit"
+        );
 
         makeBet(_player, _numberBetOn, BetType.FIRSTDIGIT);
     }
@@ -404,7 +412,10 @@ contract Bolita is AccessController, BolitaHelper {
         external
         payable
     {
-        //some checks?
+        require(
+            (_numberBetOn/10) < 1,
+            "Must be single digit"
+        );
 
         makeBet(_player, _numberBetOn, BetType.SECONDDIGIT);
     }
@@ -413,7 +424,10 @@ contract Bolita is AccessController, BolitaHelper {
         external
         payable
     {
-        //some checks?
+        require(
+            (_numberBetOn/10) < 1,
+            "Must be single digit"
+        );
 
         makeBet(_player, _numberBetOn, BetType.THIRDDIGIT);
     }
@@ -422,7 +436,10 @@ contract Bolita is AccessController, BolitaHelper {
         external
         payable
     {
-        //some checks?
+        require(
+            (_numberBetOn/1000) < 1,
+            "Must be less than 999"
+        );
 
         makeBet(_player, _numberBetOn, BetType.ALLTHREE);   
     }
@@ -460,7 +477,5 @@ contract Bolita is AccessController, BolitaHelper {
     {
         payable(ownerAddress).transfer(_amount);
     }
-
-
 
 }
