@@ -152,40 +152,10 @@ library SafeMath {
         return a % b;
     }
 }
-
-
 //one day we will track and make accessible all previous bet data
-//contract BolitaHistory
+//contract BolitaHistory {}
 
-/*
-contract BolitaHelper {
-
-   
-   
-   // enum BetType {FIRSTDIGIT, SECONDDIGIT, THIRDDIGIT, ALLTHREE}
-    struct Bet {
-        uint16 numberBetOn;
-     //   BetType betTypeOfBet;
-    }
-
-    mapping(address => Bet) playerBets;
-    
-    //function to prevent 1 address making the same bet
-    function validateBet(address _bolitaPlayer, uint16 _numBetOn)
-    internal
-    {
-        
-    }
-    
-    
-    
-
-//on makebet(), transfer in the betamounts
-    //function to close and settle all bets
-}
-*/
-
-
+//contract BolitaHelper {}
 
 //will inherit BolitaHelper for snapshot before deleting, getWinners, payWinners, etc
 //to make Bolita more simple: just makes bets and sets winning number
@@ -209,7 +179,7 @@ contract Bolita is AccessController {
     //TODO use safemath
     uint256 singleDigitWinnings = 5 * (defaultBetAmountInt);
     uint256 allDigitWinnings = 50 * (defaultBetAmountInt);
-    //address[] bolitaPlayers;
+    uint16[] listOfNumbersBetOn;
     
     
     event WinningNumber(uint16 winningNum);
@@ -221,6 +191,7 @@ contract Bolita is AccessController {
     
     event GotPaid(address _winner);
     
+    event BetCleared(address[] bettors);
     
     event TestEvent(address[] winners);
     
@@ -268,6 +239,25 @@ contract Bolita is AccessController {
         payable
     {
         payable(address(this)).transfer(msg.value);
+    }
+
+    function getSINGLEAddressesByBet(uint16 _numBetOn)
+        public
+        returns (address[] memory)
+    {
+        return (mapOfBets[_numBetOn][BetType.FIRSTDIGIT]);
+    }
+
+
+    function clearBets(BetType _betType)
+        public
+        onlyAdmin
+    {
+        for(uint16 i = 0; i < listOfNumbersBetOn.length; i++)
+        {
+            emit BetCleared(mapOfBets[i][_betType]);
+            delete mapOfBets[i][_betType];
+        }
     }
     
     function payWinners(address[] memory _winners, uint256 _winningAmount)
@@ -383,14 +373,14 @@ contract Bolita is AccessController {
         // emit TestEvent(thirdDigitWinners);
         // emit TestEvent(allDigitWinners);
         
-        //add logic for closing current/"previous" bets
-        //settleWinningBets
-        
-        
-        //add clear data functions here
-        
         
         //clear data
+        clearBets(BetType.FIRSTDIGIT);
+        clearBets(BetType.SECONDDIGIT);
+        clearBets(BetType.THIRDDIGIT);
+        clearBets(BetType.ALLTHREE);
+
+        //take snapshot
         
     }
 
@@ -457,7 +447,7 @@ contract Bolita is AccessController {
         
         mapOfBets[numberBetOn][_betType].push(_playerAddress);
         hasPlayerBetAlready[_playerAddress] = true;
-        
+        listOfNumbersBetOn.push(numberBetOn);
         payable(address(this)).transfer(msg.value);
     }
     
