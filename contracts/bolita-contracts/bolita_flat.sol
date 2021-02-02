@@ -203,6 +203,19 @@ contract Bolita is AccessController {
     //FOR USE WHEN A PLAYER WINS, BUT THERE IS NO ETH AVAILABLE
     mapping(address => uint256) amountOwedToPlayersForReimbursement;
 
+    modifier threeDigitChecker(uint16 _number)
+    {
+        require(
+            (_number/1000) < 1 || _number == 0,
+            "Must be less than 999"
+        );
+        
+        require(
+            (_number/100) > 1 || _number == 0,
+            "Must be three digits"
+        );
+        _;
+    }
 
     //move up to BolitaHelper
     modifier defaultBetAmount(uint256 _betAmount)
@@ -253,11 +266,21 @@ contract Bolita is AccessController {
         public
         onlyAdmin
     {
+        address[] memory betsList;
+        
         for(uint16 i = 0; i < listOfNumbersBetOn.length; i++)
         {
+            betsList = mapOfBets[i][_betType];
+            
             emit BetCleared(mapOfBets[i][_betType]);
             delete mapOfBets[i][_betType];
+            
+            for(uint16 i = 0; i < betsList.length; i++) {
+                hasPlayerBetAlready[betsList[i]] = false;
+            }
+            
         }
+        
     }
     
     function payWinners(address[] memory _winners, uint256 _winningAmount)
@@ -312,11 +335,8 @@ contract Bolita is AccessController {
         public
         payable
         onlyAdmin
+        threeDigitChecker(_newWinningNum)
     {
-        require(
-            _newWinningNum <= 999,
-            "BOLITA: invalid winning number"
-        );
 
         emit WinningNumber(_newWinningNum);
         
