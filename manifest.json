@@ -12,10 +12,5 @@
         "activeTab",
         "notifications",
         "https://covid.cdc.gov/covid-data-tracker/#cases_casesper100klast7days/allow-cors"
-    ],
-    "background": {
-        "scripts": ["background.js"],
-        "persistent": true
-      },
-      "content_security_policy": "script-src 'self' 'unsafe-eval' https://cdn.jsdelivr.net; object-src 'self'"
+    ]
 }
