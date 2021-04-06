@@ -165,6 +165,8 @@ contract Bolita is AccessController {
     using SafeMath for uint16;
     // using SafeMath for uint8;
 
+    bool bBettingIsOpen;
+
     uint16 latestWinningNumber;
     uint16 latestWinningFirstDigit;
     uint16 latestWinningSecondDigit;
@@ -182,7 +184,7 @@ contract Bolita is AccessController {
     uint16[] listOfNumbersBetOn;
     
     
-    event WinningNumber(uint16 winningNum);
+    //event WinningNumber(uint16 winningNum);
     event FirstDigitWinningNumber(uint16 winningNumFirstDigit);
     event SecondDigitWinningNumber(uint16 winningNumSecondDigit);
     event ThirdDigitWinningNumber(uint16 winningNumThirdDigit);
@@ -203,15 +205,24 @@ contract Bolita is AccessController {
     //FOR USE WHEN A PLAYER WINS, BUT THERE IS NO ETH AVAILABLE
     mapping(address => uint256) amountOwedToPlayersForReimbursement;
 
+    modifier winningDigitChecker(uint16 _number)
+    {
+        require(_number >= 0 && _number <= 9,
+        "Winning digit must be 0-9"
+        );
+        _;
+    }
+
+
     modifier threeDigitChecker(uint16 _number)
     {
         require(
-            (_number/1000) < 1 || _number == 0,
+            (_number/1000) <= 1 || _number == 0,
             "Must be less than 999"
         );
         
         require(
-            (_number/100) > 1 || _number == 0,
+            (_number/100) >= 1 || _number == 0,
             "Must be three digits"
         );
         _;
@@ -235,10 +246,24 @@ contract Bolita is AccessController {
         );
         _;
     }
+
+        
+    modifier bettingIsOpen()
+    {
+        require(
+            bBettingIsOpen == true,
+            "Betting is closed"
+        );
+        _;
+    }
     
     //fallback function
-        constructor()  payable {
-
+    constructor()
+        payable 
+    {
+            bBettingIsOpen = true;
+            
+            //add require for value of ETH sent to contract on deploy
     }
     
     fallback() external payable { 
@@ -283,6 +308,14 @@ contract Bolita is AccessController {
         
     }
     
+       function closeBetting()
+        public
+        onlyAdmin
+    {
+        bBettingIsOpen = false;
+    }
+
+
     function payWinners(address[] memory _winners, uint256 _winningAmount)
         public
         onlyAdmin
@@ -302,7 +335,7 @@ contract Bolita is AccessController {
     }
     
     function getWinners(
-        uint16 _winningNumber,
+      //  uint16 _winningNumber,
         uint16 _firstWinningDigit,
         uint16 _secondWinningDigit,
         uint16 _thirdWinningDigit
@@ -319,7 +352,7 @@ contract Bolita is AccessController {
         firstDigitWinners = mapOfBets[_firstWinningDigit][BetType.FIRSTDIGIT];
         secondDigitWinners = mapOfBets[_secondWinningDigit][BetType.SECONDDIGIT];
         thirdDigitWinners = mapOfBets[_thirdWinningDigit][BetType.THIRDDIGIT];
-        allDigitWinners = mapOfBets[_winningNumber][BetType.ALLTHREE];
+       // allDigitWinners = mapOfBets[_winningNumber][BetType.ALLTHREE];
         
         emit winners(firstDigitWinners, BetType.FIRSTDIGIT);
         emit winners(secondDigitWinners, BetType.SECONDDIGIT);
@@ -331,23 +364,32 @@ contract Bolita is AccessController {
     
     //TODO: upgrade with SafeMath
     //TODO: change from memory to calldata so public can be external and lower the gas
-    function setWinningNumber(uint16 _newWinningNum)
+    //function setWinningNumber(uint16 _newWinningNum)
+    function setWinningNumber(uint16 _firstWinningNum,
+                              uint16 _secondWinningNum,
+                              uint16 _thirdWinningNum)
         public
         payable
         onlyAdmin
-        threeDigitChecker(_newWinningNum)
+        //threeDigitChecker(_newWinningNum)
+        winningDigitChecker(_firstWinningNum)
+        winningDigitChecker(_secondWinningNum)
+        winningDigitChecker(_thirdWinningNum)
     {
 
-        emit WinningNumber(_newWinningNum);
+      //  emit WinningNumber(_newWinningNum);
         
-        latestWinningFirstDigit = _newWinningNum/(100);
-        emit FirstDigitWinningNumber(latestWinningFirstDigit);
+        //latestWinningFirstDigit = _newWinningNum/(100);
+       // latestWinningFirstDigit = _firstWinningNum;
+        emit FirstDigitWinningNumber(_firstWinningNum);
                 
-        latestWinningSecondDigit = ((_newWinningNum/10)%10);
-        emit SecondDigitWinningNumber(latestWinningSecondDigit);
+        //latestWinningSecondDigit = ((_newWinningNum/10)%10);
+        //latestWinningSecondDigit = _secondWinningNum;
+        emit SecondDigitWinningNumber(_secondWinningNum);
                 
-        latestWinningThirdDigit = _newWinningNum%10;
-        emit ThirdDigitWinningNumber(latestWinningThirdDigit);
+        //latestWinningThirdDigit = _newWinningNum%10;
+        //latestWinningThirdDigit = _thirdWinningNum;
+        emit ThirdDigitWinningNumber(_thirdWinningNum);
         
         address[] memory firstDigitWinners;
         address[] memory secondDigitWinners;
@@ -360,10 +402,10 @@ contract Bolita is AccessController {
             allDigitWinners
         ) =  
         getWinners(
-            _newWinningNum,
-            latestWinningFirstDigit,
-            latestWinningSecondDigit,
-            latestWinningThirdDigit
+         //   _newWinningNum,
+            _firstWinningNum,
+            _secondWinningNum,
+            _thirdWinningNum
         );
         
         
@@ -401,6 +443,9 @@ contract Bolita is AccessController {
         clearBets(BetType.ALLTHREE);
 
         //take snapshot
+
+        //open back up for betting
+        bBettingIsOpen = true;
         
     }
 
@@ -408,7 +453,6 @@ contract Bolita is AccessController {
     function betOnFirstDigit(address _player, uint16 _numberBetOn)
         external
         payable
-        
     {
         require(
             (_numberBetOn/10) < 1,
@@ -463,6 +507,7 @@ contract Bolita is AccessController {
         payable
         defaultBetAmount(uint256(msg.value))
         hasAddressBetAlready(_playerAddress)
+        bettingIsOpen
     {
         
         mapOfBets[numberBetOn][_betType].push(_playerAddress);
