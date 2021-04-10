@@ -1,5 +1,4 @@
 // SPDX-License-Identifier: MIT
-
 pragma solidity ^0.8.0;
 
 contract AccessController {
@@ -113,8 +112,6 @@ contract AccessController {
     }
 }
 
-
-
 //probably unneeded in solidity 0.8.0, but adding for consistency's sake
 library SafeMath {
 
@@ -185,6 +182,10 @@ contract Bolita is AccessController {
     
     event Received(address, uint);
 
+    event BetAccepted(address bettor,uint16 numberBetOn);
+
+    event BettingIsOpen(bool bettingIsOpenStatus);
+
     //event WinningNumber(uint16 winningNum);
     event FirstDigitWinningNumber(uint16 winningNumFirstDigit);
     event SecondDigitWinningNumber(uint16 winningNumSecondDigit);
@@ -213,7 +214,6 @@ contract Bolita is AccessController {
         );
         _;
     }
-
 
     modifier threeDigitChecker(uint16 _number)
     {
@@ -262,9 +262,9 @@ contract Bolita is AccessController {
     constructor()
         payable 
     {
-            bBettingIsOpen = true;
-            
-            //add require for value of ETH sent to contract on deploy
+        bBettingIsOpen = true;
+        emit BettingIsOpen(true);
+        //add require for value of ETH sent to contract on deploy
     }
     
     fallback() external payable { 
@@ -291,7 +291,6 @@ contract Bolita is AccessController {
         return (mapOfBets[_numBetOn][BetType.FIRSTDIGIT]);
     }
 
-
     function clearBets(BetType _betType)
         public
         onlyAdmin
@@ -312,12 +311,13 @@ contract Bolita is AccessController {
         }
         
     }
-    
-       function closeBetting()
+
+    function closeBetting()
         public
         onlyAdmin
     {
         bBettingIsOpen = false;
+        emit BettingIsOpen(bBettingIsOpen);
     }
 
 
@@ -382,18 +382,16 @@ contract Bolita is AccessController {
         winningDigitChecker(_thirdWinningNum)
     {
 
-      //  emit WinningNumber(_newWinningNum);
-        
-        //latestWinningFirstDigit = _newWinningNum/(100);
-       // latestWinningFirstDigit = _firstWinningNum;
+      //  used to support 3 digit bets, so winning numbers were calculated like below
+      // most removed to prevent code hoarding, some kept to upgrade one day
+
         emit FirstDigitWinningNumber(_firstWinningNum);
                 
         //latestWinningSecondDigit = ((_newWinningNum/10)%10);
         //latestWinningSecondDigit = _secondWinningNum;
         emit SecondDigitWinningNumber(_secondWinningNum);
                 
-        //latestWinningThirdDigit = _newWinningNum%10;
-        //latestWinningThirdDigit = _thirdWinningNum;
+
         emit ThirdDigitWinningNumber(_thirdWinningNum);
         
         address[] memory firstDigitWinners;
@@ -407,7 +405,6 @@ contract Bolita is AccessController {
             allDigitWinners
         ) =  
         getWinners(
-         //   _newWinningNum,
             _firstWinningNum,
             _secondWinningNum,
             _thirdWinningNum
@@ -435,11 +432,7 @@ contract Bolita is AccessController {
         );
         
     //TO BE REMOVED:        
-        // emit TestEvent(firstDigitWinners);
-        // emit TestEvent(secondDigitWinners);
-        // emit TestEvent(thirdDigitWinners);
-        // emit TestEvent(allDigitWinners);
-        
+        // emit TestEvent(firstDigitWinners);   
         
         //clear data
         clearBets(BetType.FIRSTDIGIT);
@@ -451,6 +444,7 @@ contract Bolita is AccessController {
 
         //open back up for betting
         bBettingIsOpen = true;
+        emit BettingIsOpen(bBettingIsOpen);
         
     }
 
@@ -519,8 +513,9 @@ contract Bolita is AccessController {
         hasPlayerBetAlready[_playerAddress] = true;
         listOfNumbersBetOn.push(numberBetOn);
         payable(address(this)).transfer(msg.value);
+
+        emit BetAccepted(_playerAddress,numberBetOn);
     }
-    
     
     function getContractValue()
         external
@@ -537,5 +532,4 @@ contract Bolita is AccessController {
     {
         payable(ownerAddress).transfer(_amount);
     }
-
 }
