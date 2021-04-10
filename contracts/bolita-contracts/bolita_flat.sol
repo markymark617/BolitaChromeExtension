@@ -183,7 +183,8 @@ contract Bolita is AccessController {
     uint256 allDigitWinnings = 50 * (defaultBetAmountInt);
     uint16[] listOfNumbersBetOn;
     
-    
+    event Received(address, uint);
+
     //event WinningNumber(uint16 winningNum);
     event FirstDigitWinningNumber(uint16 winningNumFirstDigit);
     event SecondDigitWinningNumber(uint16 winningNumSecondDigit);
@@ -270,7 +271,10 @@ contract Bolita is AccessController {
         //console.log("FALLBACK");
     }
     
-    
+
+    receive() external payable {
+        emit Received(msg.sender, msg.value);
+    }
     
     function sendETHtoContract()
         external
@@ -281,6 +285,7 @@ contract Bolita is AccessController {
 
     function getSINGLEAddressesByBet(uint16 _numBetOn)
         public
+        view
         returns (address[] memory)
     {
         return (mapOfBets[_numBetOn][BetType.FIRSTDIGIT]);
@@ -300,7 +305,7 @@ contract Bolita is AccessController {
             emit BetCleared(mapOfBets[i][_betType]);
             delete mapOfBets[i][_betType];
             
-            for(uint16 i = 0; i < betsList.length; i++) {
+            for(uint16 j = 0; j < betsList.length; j++) {
                 hasPlayerBetAlready[betsList[i]] = false;
             }
             
