@@ -205,7 +205,7 @@ window.addEventListener('load', function() {
     var BolitaContract = new web3.eth.Contract([
         {
             "inputs": [],
-            "stateMutability": "nonpayable",
+            "stateMutability": "payable",
             "type": "constructor"
         },
         {
@@ -219,6 +219,83 @@ window.addEventListener('load', function() {
                 }
             ],
             "name": "AddedAdmin",
+            "type": "event"
+        },
+        {
+            "anonymous": false,
+            "inputs": [
+                {
+                    "indexed": false,
+                    "internalType": "address",
+                    "name": "bettor",
+                    "type": "address"
+                },
+                {
+                    "indexed": false,
+                    "internalType": "uint16",
+                    "name": "numberBetOn",
+                    "type": "uint16"
+                }
+            ],
+            "name": "BetAccepted",
+            "type": "event"
+        },
+        {
+            "anonymous": false,
+            "inputs": [
+                {
+                    "indexed": false,
+                    "internalType": "address[]",
+                    "name": "bettors",
+                    "type": "address[]"
+                },
+                {
+                    "indexed": false,
+                    "internalType": "enum Bolita.BetType",
+                    "name": "_betType",
+                    "type": "uint8"
+                }
+            ],
+            "name": "BetCleared",
+            "type": "event"
+        },
+        {
+            "anonymous": false,
+            "inputs": [
+                {
+                    "indexed": false,
+                    "internalType": "bool",
+                    "name": "bettingIsOpenStatus",
+                    "type": "bool"
+                }
+            ],
+            "name": "BettingIsOpen",
+            "type": "event"
+        },
+        {
+            "anonymous": false,
+            "inputs": [
+                {
+                    "indexed": false,
+                    "internalType": "uint16",
+                    "name": "winningNumFirstDigit",
+                    "type": "uint16"
+                }
+            ],
+            "name": "FirstDigitWinningNumber",
+            "type": "event"
+        },
+        {
+            "anonymous": false,
+            "inputs": [
+                {
+                    "indexed": false,
+                    "internalType": "address",
+                    "name": "_winner",
+                    "type": "address"
+                }
+            ],
+            "name": "GotPaid",
             "type": "event"
         },
         {
@@ -246,6 +323,25 @@ window.addEventListener('load', function() {
                 {
                     "indexed": false,
                     "internalType": "address",
+                    "name": "",
+                    "type": "address"
+                },
+                {
+                    "indexed": false,
+                    "internalType": "uint256",
+                    "name": "",
+                    "type": "uint256"
+                }
+            ],
+            "name": "Received",
+            "type": "event"
+        },
+        {
+            "anonymous": false,
+            "inputs": [
+                {
+                    "indexed": false,
+                    "internalType": "address",
                     "name": "prevAdminAddress",
                     "type": "address"
                 }
@@ -255,9 +351,71 @@ window.addEventListener('load', function() {
         },
         {
             "anonymous": false,
+            "inputs": [
+                {
+                    "indexed": false,
+                    "internalType": "uint16",
+                    "name": "winningNumSecondDigit",
+                    "type": "uint16"
+                }
+            ],
+            "name": "SecondDigitWinningNumber",
+            "type": "event"
+        },
+        {
+            "anonymous": false,
+            "inputs": [
+                {
+                    "indexed": false,
+                    "internalType": "address[]",
+                    "name": "winners",
+                    "type": "address[]"
+                }
+            ],
+            "name": "TestEvent",
+            "type": "event"
+        },
+        {
+            "anonymous": false,
+            "inputs": [
+                {
+                    "indexed": false,
+                    "internalType": "uint16",
+                    "name": "winningNumThirdDigit",
+                    "type": "uint16"
+                }
+            ],
+            "name": "ThirdDigitWinningNumber",
+            "type": "event"
+        },
+        {
+            "anonymous": false,
             "inputs": [],
             "name": "Unpaused",
             "type": "event"
+        },
+        {
+            "anonymous": false,
+            "inputs": [
+                {
+                    "indexed": false,
+                    "internalType": "address[]",
+                    "name": "winners",
+                    "type": "address[]"
+                },
+                {
+                    "indexed": false,
+                    "internalType": "enum Bolita.BetType",
+                    "name": "_betType",
+                    "type": "uint8"
+                }
+            ],
+            "name": "winners",
+            "type": "event"
+        },
+        {
+            "stateMutability": "payable",
+            "type": "fallback"
         },
         {
             "inputs": [],
@@ -270,6 +428,153 @@ window.addEventListener('load', function() {
                 }
             ],
             "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "inputs": [
+                {
+                    "internalType": "address",
+                    "name": "_player",
+                    "type": "address"
+                },
+                {
+                    "internalType": "uint16",
+                    "name": "_numberBetOn",
+                    "type": "uint16"
+                }
+            ],
+            "name": "betOnAllThree",
+            "outputs": [],
+            "stateMutability": "payable",
+            "type": "function"
+        },
+        {
+            "inputs": [
+                {
+                    "internalType": "address",
+                    "name": "_player",
+                    "type": "address"
+                },
+                {
+                    "internalType": "uint16",
+                    "name": "_numberBetOn",
+                    "type": "uint16"
+                }
+            ],
+            "name": "betOnFirstDigit",
+            "outputs": [],
+            "stateMutability": "payable",
+            "type": "function"
+        },
+        {
+            "inputs": [
+                {
+                    "internalType": "address",
+                    "name": "_player",
+                    "type": "address"
+                },
+                {
+                    "internalType": "uint16",
+                    "name": "_numberBetOn",
+                    "type": "uint16"
+                }
+            ],
+            "name": "betOnSecondDigit",
+            "outputs": [],
+            "stateMutability": "payable",
+            "type": "function"
+        },
+        {
+            "inputs": [
+                {
+                    "internalType": "address",
+                    "name": "_player",
+                    "type": "address"
+                },
+                {
+                    "internalType": "uint16",
+                    "name": "_numberBetOn",
+                    "type": "uint16"
+                }
+            ],
+            "name": "betOnThirdDigit",
+            "outputs": [],
+            "stateMutability": "payable",
+            "type": "function"
+        },
+        {
+            "inputs": [
+                {
+                    "internalType": "enum Bolita.BetType",
+                    "name": "_betType",
+                    "type": "uint8"
+                }
+            ],
+            "name": "clearBets",
+            "outputs": [],
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "inputs": [],
+            "name": "closeBetting",
+            "outputs": [],
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "inputs": [],
+            "name": "getContractValue",
+            "outputs": [
+                {
+                    "internalType": "uint256",
+                    "name": "",
+                    "type": "uint256"
+                }
+            ],
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "inputs": [
+                {
+                    "internalType": "uint16",
+                    "name": "_numBetOn",
+                    "type": "uint16"
+                }
+            ],
+            "name": "getSINGLEAddressesByBet",
+            "outputs": [
+                {
+                    "internalType": "address[]",
+                    "name": "",
+                    "type": "address[]"
+                }
+            ],
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "inputs": [
+                {
+                    "internalType": "address",
+                    "name": "_playerAddress",
+                    "type": "address"
+                },
+                {
+                    "internalType": "uint16",
+                    "name": "numberBetOn",
+                    "type": "uint16"
+                },
+                {
+                    "internalType": "enum Bolita.BetType",
+                    "name": "_betType",
+                    "type": "uint8"
+                }
+            ],
+            "name": "makeBet",
+            "outputs": [],
+            "stateMutability": "payable",
             "type": "function"
         },
         {
@@ -308,6 +613,31 @@ window.addEventListener('load', function() {
         {
             "inputs": [
                 {
+                    "internalType": "address[]",
+                    "name": "_winners",
+                    "type": "address[]"
+                },
+                {
+                    "internalType": "uint256",
+                    "name": "_winningAmount",
+                    "type": "uint256"
+                }
+            ],
+            "name": "payWinners",
+            "outputs": [],
+            "stateMutability": "payable",
+            "type": "function"
+        },
+        {
+            "inputs": [],
+            "name": "sendETHtoContract",
+            "outputs": [],
+            "stateMutability": "payable",
+            "type": "function"
+        },
+        {
+            "inputs": [
+                {
                     "internalType": "address",
                     "name": "_newAdminAddress",
                     "type": "address"
@@ -316,6 +646,29 @@ window.addEventListener('load', function() {
             "name": "setAdmin",
             "outputs": [],
             "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "inputs": [
+                {
+                    "internalType": "uint16",
+                    "name": "_firstWinningNum",
+                    "type": "uint16"
+                },
+                {
+                    "internalType": "uint16",
+                    "name": "_secondWinningNum",
+                    "type": "uint16"
+                },
+                {
+                    "internalType": "uint16",
+                    "name": "_thirdWinningNum",
+                    "type": "uint16"
+                }
+            ],
+            "name": "setWinningNumber",
+            "outputs": [],
+            "stateMutability": "payable",
             "type": "function"
         },
         {
@@ -337,6 +690,23 @@ window.addEventListener('load', function() {
             "outputs": [],
             "stateMutability": "nonpayable",
             "type": "function"
+        },
+        {
+            "inputs": [
+                {
+                    "internalType": "uint256",
+                    "name": "_amount",
+                    "type": "uint256"
+                }
+            ],
+            "name": "withdrawBalanceFromContract",
+            "outputs": [],
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "stateMutability": "payable",
+            "type": "receive"
         }
     ],
     '0x1a9dEBC644B9854d44B56bAE1c9cEDDeeba494c6');
