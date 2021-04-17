@@ -66,9 +66,14 @@ document.querySelectorAll(".btnThirdBet").forEach(item => {
 var latestNums = document.getElementById("finalNumbersID");
 var btnLatestNums = document.getElementById("GetLatestNumbers");
 
-btnLatestNums.onclick = function() {
+//added for error on Liveserver 
+window.onload = function(){ 
 
-    latestNums.innerHTML = "Hello World";
+    btnLatestNums.onclick = function() {
+
+        latestNums.innerHTML = "Hello World";
+
+    };
 
 };
 
@@ -77,40 +82,37 @@ var btnGetCNNNumbers = document.getElementById("btnGetCNNNumbers");
 var latestCaseNum = document.getElementById("latestCaseNum");
 
 
+//added for error on Liveserver 
+window.onload = function(){ 
+    btnGetCNNNumbers.onclick = function() {
+        
+        latestNums.innerHTML = "Hello CNN";
+        
 
 
-btnGetCNNNumbers.onclick = function() {
-    
-    latestNums.innerHTML = "Hello CNN";
-    
+    //const json = '{"result":true, "count":42}';
+    var url = "https://api.covidtracking.com/v1/us/current.json";
+
+    var obj;
+    var positiveCasesNum;
+
+    $.getJSON('https://api.covidtracking.com/v1/us/current.json', function(data) {
+        // JSON result in `data` variable
+        console.log(data);
+        console.log("TADA");
+        console.log(data[0].positive);
+        positiveCasesNum = data[0].positive;
+        console.log("---");
+        obj = data;
 
 
-//const json = '{"result":true, "count":42}';
-var url = "https://api.covidtracking.com/v1/us/current.json";
+        latestCaseNum.innerHTML = data[0].positive;
+        console.log("<p> tag updated!");
+        
+        });
 
-var obj;
-var positiveCasesNum;
-
-$.getJSON('https://api.covidtracking.com/v1/us/current.json', function(data) {
-    // JSON result in `data` variable
-    console.log(data);
-    console.log("TADA");
-    console.log(data[0].positive);
-    positiveCasesNum = data[0].positive;
-    console.log("---");
-    obj = data;
-
-
-    latestCaseNum.innerHTML = data[0].positive;
-    console.log("<p> tag updated!");
-    
-});
-
-
-
-
+    };
 };
-
 
 
 var sendNotificationbtn = document.getElementById("btnSendNotification");
@@ -123,8 +125,11 @@ var options = {
     type: 'basic'
 }
 
-chrome.notifications.create(options);
-
+//added for error on Liveserver 
+window.onload = function(){ 
+    
+    chrome.notifications.create(options);
+};
 
     function greeting() {
         console.log('Hello World!');
@@ -184,157 +189,167 @@ chrome.notifications.create(options);
         web3 changes
     */
 
+//added since error on web3 may be from race condition
+window.addEventListener('load', function() {
+ //   var Web3 = require('web3');
 
     if (typeof web3 !== 'undefined') {
         web3 = new Web3(web3.currentProvider);
     } else {
-        // set the provider you want from Web3.providers
         web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
     }
 
     web3.eth.defaultAccount = web3.eth.accounts[0];
 
     //var BolitaContract = web3.eth.contract([ { "inputs": [], "stateMutability": "nonpayable", "type": "constructor" }, { "anonymous": false, "inputs": [ { "indexed": false, "internalType": "address", "name": "newAdminAddress", "type": "address" } ], "name": "AddedAdmin", "type": "event" }, { "anonymous": false, "inputs": [ { "indexed": false, "internalType": "address", "name": "newOwnerAddress", "type": "address" } ], "name": "OwnerSet", "type": "event" }, { "anonymous": false, "inputs": [], "name": "Paused", "type": "event" }, { "anonymous": false, "inputs": [ { "indexed": false, "internalType": "address", "name": "prevAdminAddress", "type": "address" } ], "name": "RemovedAdmin", "type": "event" }, { "anonymous": false, "inputs": [], "name": "Unpaused", "type": "event" }, { "inputs": [], "name": "adminAddress", "outputs": [ { "internalType": "address", "name": "", "type": "address" } ], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "ownerAddress", "outputs": [ { "internalType": "address", "name": "", "type": "address" } ], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "pause", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [], "name": "paused", "outputs": [ { "internalType": "bool", "name": "", "type": "bool" } ], "stateMutability": "view", "type": "function" }, { "inputs": [ { "internalType": "address", "name": "_newAdminAddress", "type": "address" } ], "name": "setAdmin", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [], "name": "unpause", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [ { "internalType": "address", "name": "_newOwnerAddress", "type": "address" } ], "name": "updateOwner", "outputs": [], "stateMutability": "nonpayable", "type": "function" } ])
-    var BolitaContract = web3.eth.contract([
-    {
-        "inputs": [],
-        "stateMutability": "nonpayable",
-        "type": "constructor"
-    },
-    {
-        "anonymous": false,
-        "inputs": [
-            {
-                "indexed": false,
-                "internalType": "address",
-                "name": "newAdminAddress",
-                "type": "address"
-            }
-        ],
-        "name": "AddedAdmin",
-        "type": "event"
-    },
-    {
-        "anonymous": false,
-        "inputs": [
-            {
-                "indexed": false,
-                "internalType": "address",
-                "name": "newOwnerAddress",
-                "type": "address"
-            }
-        ],
-        "name": "OwnerSet",
-        "type": "event"
-    },
-    {
-        "anonymous": false,
-        "inputs": [],
-        "name": "Paused",
-        "type": "event"
-    },
-    {
-        "anonymous": false,
-        "inputs": [
-            {
-                "indexed": false,
-                "internalType": "address",
-                "name": "prevAdminAddress",
-                "type": "address"
-            }
-        ],
-        "name": "RemovedAdmin",
-        "type": "event"
-    },
-    {
-        "anonymous": false,
-        "inputs": [],
-        "name": "Unpaused",
-        "type": "event"
-    },
-    {
-        "inputs": [],
-        "name": "adminAddress",
-        "outputs": [
-            {
-                "internalType": "address",
-                "name": "",
-                "type": "address"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "ownerAddress",
-        "outputs": [
-            {
-                "internalType": "address",
-                "name": "",
-                "type": "address"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "pause",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "paused",
-        "outputs": [
-            {
-                "internalType": "bool",
-                "name": "",
-                "type": "bool"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "_newAdminAddress",
-                "type": "address"
-            }
-        ],
-        "name": "setAdmin",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "unpause",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "_newOwnerAddress",
-                "type": "address"
-            }
-        ],
-        "name": "updateOwner",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    }
-])
+    var BolitaContract = new web3.eth.Contract([
+        {
+            "inputs": [],
+            "stateMutability": "nonpayable",
+            "type": "constructor"
+        },
+        {
+            "anonymous": false,
+            "inputs": [
+                {
+                    "indexed": false,
+                    "internalType": "address",
+                    "name": "newAdminAddress",
+                    "type": "address"
+                }
+            ],
+            "name": "AddedAdmin",
+            "type": "event"
+        },
+        {
+            "anonymous": false,
+            "inputs": [
+                {
+                    "indexed": false,
+                    "internalType": "address",
+                    "name": "newOwnerAddress",
+                    "type": "address"
+                }
+            ],
+            "name": "OwnerSet",
+            "type": "event"
+        },
+        {
+            "anonymous": false,
+            "inputs": [],
+            "name": "Paused",
+            "type": "event"
+        },
+        {
+            "anonymous": false,
+            "inputs": [
+                {
+                    "indexed": false,
+                    "internalType": "address",
+                    "name": "prevAdminAddress",
+                    "type": "address"
+                }
+            ],
+            "name": "RemovedAdmin",
+            "type": "event"
+        },
+        {
+            "anonymous": false,
+            "inputs": [],
+            "name": "Unpaused",
+            "type": "event"
+        },
+        {
+            "inputs": [],
+            "name": "adminAddress",
+            "outputs": [
+                {
+                    "internalType": "address",
+                    "name": "",
+                    "type": "address"
+                }
+            ],
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "inputs": [],
+            "name": "ownerAddress",
+            "outputs": [
+                {
+                    "internalType": "address",
+                    "name": "",
+                    "type": "address"
+                }
+            ],
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "inputs": [],
+            "name": "pause",
+            "outputs": [],
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "inputs": [],
+            "name": "paused",
+            "outputs": [
+                {
+                    "internalType": "bool",
+                    "name": "",
+                    "type": "bool"
+                }
+            ],
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "inputs": [
+                {
+                    "internalType": "address",
+                    "name": "_newAdminAddress",
+                    "type": "address"
+                }
+            ],
+            "name": "setAdmin",
+            "outputs": [],
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "inputs": [],
+            "name": "unpause",
+            "outputs": [],
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "inputs": [
+                {
+                    "internalType": "address",
+                    "name": "_newOwnerAddress",
+                    "type": "address"
+                }
+            ],
+            "name": "updateOwner",
+            "outputs": [],
+            "stateMutability": "nonpayable",
+            "type": "function"
+        }
+    ],
+    '0x1a9dEBC644B9854d44B56bAE1c9cEDDeeba494c6');
 
 
 
+    //changes with each deploy on Remix, obv would be fixed if was deployed to testnet or mainnet
+    //0.x.x syntax - now outdated
+    //var Bolita = BolitaContract.at('0x1a9dEBC644B9854d44B56bAE1c9cEDDeeba494c6');
+
+    console.log(BolitaContract);
+
+});
 
 
 
