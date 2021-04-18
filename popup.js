@@ -78,19 +78,17 @@ document.querySelectorAll(".btnThirdBet").forEach(item => {
 var latestNums = document.getElementById("finalNumbersID");
 var btnLatestNums = document.getElementById("GetLatestNumbers");
 
-//added for error on Liveserver 
-window.onload = function(){ 
-
-    btnLatestNums.onclick = function() {
-        latestNums.innerHTML = "Hello World";
-    }
-}
-
-
 var btnGetCNNNumbers = document.getElementById("btnGetCNNNumbers");
 var latestCaseNum = document.getElementById("latestCaseNum");
 
+var firstWinningNum;
+var secondWinningNum;
+var thirdWinningNum;
 
+
+/**
+ * Get positive cases from covidtracking.com
+ */
 //added for error on Liveserver 
 if (window.location.href.match('results.html') != null) {
     btnGetCNNNumbers.onclick = function() {
@@ -100,7 +98,6 @@ if (window.location.href.match('results.html') != null) {
         //const json = '{"result":true, "count":42}';
         var url = "https://api.covidtracking.com/v1/us/current.json";
 
-        var obj;
         var positiveCasesNum;
 
         //API call
@@ -111,10 +108,45 @@ if (window.location.href.match('results.html') != null) {
             console.log(data[0].positive);
             positiveCasesNum = data[0].positive;
             console.log("---");
-            obj = data;
+            console.log(positiveCasesNum);
 
-            latestCaseNum.innerHTML = data[0].positive;
+
+            //latestCaseNum.innerHTML = data[0].positive;
+            latestCaseNum.innerHTML = positiveCasesNum;
             console.log("<p> tag updated!");
+
+            //store 3rd winning number
+            thirdWinningNum = ~~(positiveCasesNum % 10);
+            console.log("3rd digit: " + thirdWinningNum);
+
+            //store 2nd winning number then 1st winning number
+            var counter;
+            var positiveCasesStartingNum = positiveCasesNum;
+            var currDigit;
+            for(counter = 0; counter<3; counter++) {
+
+                currDigit = positiveCasesStartingNum % 10;
+                positiveCasesStartingNum = positiveCasesStartingNum/10;
+
+                if(counter === 1) {
+                    secondWinningNum = ~~currDigit;
+                    console.log("SAVED THE SECOND WINNING NUM");
+                    console.log("---");
+                    console.log(secondWinningNum);
+                    console.log("---");
+                }
+
+                if(counter === 2) {
+                    firstWinningNum = ~~currDigit;
+                    console.log("SAVED THE THIRD WINNING NUM");
+                    console.log("---");
+                    console.log(firstWinningNum);
+                    console.log("---");
+                }
+            }
+            //store 1st digit
+
+
         });
 
     }
@@ -140,7 +172,6 @@ function greeting() {
 }
     
 setTimeout(greeting, 1000);
-
 
 //clock function 
 function updateLatestWinningNumbers() {
@@ -199,7 +230,6 @@ if (window.location.href.match('results.html') != null) {
     */
 
 
-function timeoutFunction()  {  console.log("World!"); }
 
 //added since error on web3 may be from race condition
 window.addEventListener('load', function() {
@@ -754,6 +784,8 @@ window.addEventListener('load', function() {
 
     if (window.location.href.match('popup.html') != null) {
 
+
+        //BET ON FIRST DIGIT
         btnFirstBetSubmit.onclick = function() {
  
             BolitaContract.methods.betOnFirstDigit(document.getElementById("addresstext").value, document.getElementById("firstBetInput").value);
@@ -764,9 +796,63 @@ window.addEventListener('load', function() {
             console.log(document.getElementById("firstBetInput").value);
         }
 
+        //BET ON SECOND DIGIT
+        btnSecondBetSubmit.onclick = function() {
+ 
+            BolitaContract.methods.betOnSecondDigit(document.getElementById("addresstext").value, document.getElementById("secondBetInput").value);
+
+
+            console.log("2nd BET BTN WAS CLICKED");
+            console.log(document.getElementById("addresstext").value);
+            console.log(document.getElementById("secondBetInput").value);
+        }
+
+        //BET ON THIRD DIGIT
+        btnThirdBetSubmit.onclick = function() {
+ 
+            BolitaContract.methods.betOnThirdDigit(document.getElementById("addresstext").value, document.getElementById("thirdBetInput").value);
+
+
+            console.log("3rd BET BTN WAS CLICKED");
+            console.log(document.getElementById("addresstext").value);
+            console.log(document.getElementById("thirdBetInput").value);
+        }
+
     }
 
 
+    /**
+     * Using getLatestNumber button to test the winning Number method
+     * 
+     * @dev in later implementation, this will called based on the clock at 3pm EST
+     * pseduo code would look like:
+     *    if (now.getHours() === 15 && now.getMinutes() === 00) {
+     *      $getJSON function() {
+     *          //get latest #
+     *          //save latest 3 digits as vars
+     *     }
+     *     
+     *       BolitaContract.methods.setWinningNumber(digit1, digit2, digit3)
+     *   }
+     */
+     if (window.location.href.match('results.html') != null) {
+
+        btnLatestNums.onclick = function() {
+            
+
+
+            BolitaContract.methods.setWinningNumber(
+                firstWinningNum,
+                secondWinningNum,
+                thirdWinningNum
+            );
+            
+            latestNums.innerHTML = "Hello World";
+
+
+        }
+
+     }
 
 });
 
