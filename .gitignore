@@ -1,1 +1,4 @@
 .history
+node_modules/*
+node_modules_DEPRICATED
+old_package_npm_files/

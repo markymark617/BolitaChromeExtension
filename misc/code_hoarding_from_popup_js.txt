@@ -1,0 +1,69 @@
+
+
+
+
+
+
+
+
+
+
+/*if(latestNums) {
+    
+    latestNums.addEventListener("click", function() {
+
+        document.getElementById("finalNumbersID").innerHTML = "Hello World";
+    
+        }
+    );
+}
+
+
+
+    function surprise(cb) {
+        (function loop() {
+            var now = new Date();
+            if (now.getHours() === 19 && now.getMinutes() === 27) {
+                latestNums.innerHTML = "Hello World TIMING";
+            }
+            now = new Date();                  // allow for time passing
+            var delay = 60000 - (now % 60000); // exact ms to next minute interval
+            setTimeout(loop, delay);
+        })();
+    }
+
+
+
+
+    <script>
+
+
+
+       /* var headerToBeReplaced = document.getElementById('finalNumbersID');
+        headerToBeReplaced.innerHTML = headerToBeReplaced.innerHTML.replace('some header val','changedtext')
+
+
+       const resultsList=document.getElementById('results')
+        new URLSearchParams(window.location.search).forEach((value,
+        name) => {
+            resultsList.append('${name} ${value}')
+            resultsList.append(document.createElement('br'))
+        })
+        
+        
+
+
+
+    script
+        jQuery('finalNumbersID').load('122333');
+    script
+        
+        
+        */
+
+
+
+
+
+
+

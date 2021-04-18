@@ -165,13 +165,14 @@ window.onload = function(){
     chrome.notifications.create(options);
 }
 
-
+/*
 //testing function
 function greeting() {
     console.log('Hello World!');
 }
     
 setTimeout(greeting, 1000);
+*/
 
 //clock function 
 function updateLatestWinningNumbers() {
@@ -186,7 +187,7 @@ function updateLatestWinningNumbers() {
                 type: 'basic',
                 iconUrl: 'images/bolita_logo.png',
                 title: 'Time reached',
-                message: "TIMING boom baby"
+                message: "TIMING"
             };
 
             chrome.notifications.create('timeNotif', notifOptions);

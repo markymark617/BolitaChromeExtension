@@ -2,7 +2,7 @@
   "name": "bolita_launcher",
   "version": "1.0.0",
   "description": "Bolita",
-  "main": "truffle-config.js",
+  "main": "jquery-3.5.1.min.js",
   "directories": {
     "test": "test"
   },
@@ -12,9 +12,16 @@
     "test": "truffle test test/bolita.test.js"
   },
   "author": "MarkF",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/markymark617/BolitaChromeExtension.git"
+  },
+  "author": "",
   "license": "ISC",
-  "keywords": [],
-  "dependencies": {},
+  "bugs": {
+    "url": "https://github.com/markymark617/BolitaChromeExtension/issues"
+  },
+  "homepage": "https://github.com/markymark617/BolitaChromeExtension#readme",
   "devDependencies": {
     "@biconomy/mexa": "^1.5.6",
     "@openzeppelin/contracts": "^*",
@@ -26,11 +33,11 @@
     "eth-gas-reporter": "^0.1.12",
     "ethereum-bridge": "^0.6.2",
     "ethlint": "1.2.3",
-    "ganache-cli": "^6.9.1",
+    "ganache-cli": "^6.12.2",
     "serialize-javascript": "^4.0.0",
     "truffle": "^5.1.50",
     "truffle-hdwallet-provider": "^1.0.17",
     "truffle-privatekey-provider": "^1.3.0",
-    "web3": "^1.2.11"
+    "web3": "^1.3.5"
   }
 }
