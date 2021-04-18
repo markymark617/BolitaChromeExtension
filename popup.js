@@ -14,14 +14,14 @@ document.querySelectorAll(".btnFirstBet").forEach(item => {
                 item.classList.remove("active");
                 item.style.opacity=1;
             
-        })
+        });
 
         item.style.opacity= 0.4;
         item.classList.add("active");
 
         document.getElementById("firstBetInput").value= item.value;
 
-    })
+    });
 });
 
 /**
@@ -39,14 +39,14 @@ document.querySelectorAll(".btnSecondBet").forEach(item => {
                 item.classList.remove("active");
                 item.style.opacity=1;
             
-        })
+        });
 
         item.style.opacity= 0.4;
         item.classList.add("active");
 
         document.getElementById("secondBetInput").value= item.value;
 
-    })
+    });
 });
 
 /**
@@ -64,14 +64,14 @@ document.querySelectorAll(".btnThirdBet").forEach(item => {
                 item.classList.remove("active");
                 item.style.opacity=1;
             
-        })
+        });
 
         item.style.opacity= 0.4;
         item.classList.add("active");
 
         document.getElementById("thirdBetInput").value= item.value;
 
-    })
+    });
 });
 
 //Button IDs on second page
@@ -83,8 +83,8 @@ window.onload = function(){
 
     btnLatestNums.onclick = function() {
         latestNums.innerHTML = "Hello World";
-    };
-};
+    }
+}
 
 
 var btnGetCNNNumbers = document.getElementById("btnGetCNNNumbers");
@@ -92,7 +92,7 @@ var latestCaseNum = document.getElementById("latestCaseNum");
 
 
 //added for error on Liveserver 
-window.onload = function(){ 
+if (window.location.href.match('results.html') != null) {
     btnGetCNNNumbers.onclick = function() {
         
         latestNums.innerHTML = "Hello CNN";
@@ -117,8 +117,8 @@ window.onload = function(){
             console.log("<p> tag updated!");
         });
 
-    };
-};
+    }
+}
 
 var sendNotificationbtn = document.getElementById("btnSendNotification");
 var options = {
@@ -131,7 +131,7 @@ var options = {
 //added for error on Liveserver 
 window.onload = function(){ 
     chrome.notifications.create(options);
-};
+}
 
 
 //testing function
@@ -172,27 +172,34 @@ function updateLatestWinningNumbers() {
 //run clock function
 updateLatestWinningNumbers();
 
-function updateClock() {
-    var now = new Date(), // current date
-        time = now.getHours() + ':' + now.getMinutes() +"::" + now.getSeconds();
+//added for error on Liveserver 
+if (window.location.href.match('results.html') != null) {
+    function updateClock() {
+        var now = new Date(), // current date
+            time = now.getHours() + ':' + now.getMinutes() +"::" + now.getSeconds();
 
-        // a cleaner way than string concatenation
-        date = [now.getDate(), 
-                now.getFullYear()].join(' ');
+            // a cleaner way than string concatenation
+            date = [now.getDate(), 
+                    now.getFullYear()].join(' ');
 
-    // set the content of the element with the ID time to the formatted string
-    document.getElementById('time').innerHTML =  now;
+        // set the content of the element with the ID time to the formatted string
+        document.getElementById('time').innerHTML =  now;
 
-    // call this function again in 1000ms
-    setInterval(updateClock, 1000);
+        // call this function again in 1000ms
+        setInterval(updateClock, 1000);
+    }
+
+    updateClock(); // initial call
+
 }
-updateClock(); // initial call
-    
 
 
     /*
         web3 changes
     */
+
+
+function timeoutFunction()  {  console.log("World!"); }
 
 //added since error on web3 may be from race condition
 window.addEventListener('load', function() {
@@ -714,14 +721,30 @@ window.addEventListener('load', function() {
             "type": "receive"
         }
     ],
-    '0x1a9dEBC644B9854d44B56bAE1c9cEDDeeba494c6');
+    '0x1818E7e5fCA9513aABeD1AAa0d3E0b8233456AC2');
 
     console.log(BolitaContract);
 
 
+    //add getter to results.html to verify blockchain connectivity
+
+    if (window.location.href.match('popup.html') != null) {
+
+        btnFirstBetSubmit.onclick = function() {
+ 
+            BolitaContract.methods.makeBet(document.getElementById("addresstext").value, document.getElementById("firstBetInput").value, 1);
+
+
+            console.log("1st BET BTN WAS CLICKED");
+            console.log(document.getElementById("addresstext").value);
+            console.log(document.getElementById("firstBetInput").value);
+        }
+
+    }
+
+
 
 });
-
 
 
 
