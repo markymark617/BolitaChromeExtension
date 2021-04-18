@@ -22,12 +22,12 @@ https://www.thedailybeast.com/bolita-where-mom-and-pop-meet-the-mafia
 Bolita is a fascinating project because it has been decentralized since its Cuban-American adoption in the 40s through the 90s.
 People would bet on "the number", done either by betting with 3 bets on each of the last 3 numbers, or all your money on 1 three digit number.
 Your odds are higher with 1 digit betting, but your payout is higher with 3 digit betting.
-Cash would be handed off to anyone in the neighbourhood to bet on the number, and you would call in to "The Office" to give your name, number, and bet amount.
+Cash would be handed off to anyone in the neighbourhood such as a bar tender who could just tell police that it was a tip, and that cash would be picked up later on. To put in your bet, you would call in to "The Office" to give your name, number, and bet amount.
 
-The cool part is, they were betting on the last 3 digits of the total handle at New York City's horse racing track. The handle is the toal amount bet on all races for the day. 
+The cool part is, they were betting on the last 3 digits of the total handle at a New York City horse racing track. The handle is the total amount bet on all races for the day. 
 These numbers would be printed in the paper everyday, and on the day of there was a toll number that you could call from any pay phone and they would read out the results, with the total handle of the day being announced last. So you could get the winning number through word of mouth, but verify the winning number from several independent sources. All without the internet.
 
-Now, the real money was made by banking the cash that was handled - not too dissimilar from an insurance company's business model. But additional expenses like paying off cops, renting several apartments so you could flip offices at the drop of a hat, paying bonds for those who got caught, etc hurt their margins, but such is life in a crooked New York City. 
+Now, the real money was made by banking the cash that was handled - not too dissimilar from an insurance company's business model. Aadditional expenses like paying off cops, renting several apartments so you could flip offices at the drop of a hat, paying bonds for those who got caught, etc hurt their margins, but such is life in a crooked New York City. 
 
 This dapp is trying to achieve the same decentralization. The goal is to allow people to guess winning numbers that they can verify on their own. 
 

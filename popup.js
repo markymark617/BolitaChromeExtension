@@ -87,7 +87,7 @@ var thirdWinningNum;
 
 
 /**
- * Get positive cases from covidtracking.com
+ * Get # of positive cases from covidtracking.com
  */
 //added for error on Liveserver 
 if (window.location.href.match('results.html') != null) {
@@ -144,11 +144,7 @@ if (window.location.href.match('results.html') != null) {
                     console.log("---");
                 }
             }
-            //store 1st digit
-
-
         });
-
     }
 }
 
@@ -165,14 +161,6 @@ window.onload = function(){
     chrome.notifications.create(options);
 }
 
-/*
-//testing function
-function greeting() {
-    console.log('Hello World!');
-}
-    
-setTimeout(greeting, 1000);
-*/
 
 //clock function 
 function updateLatestWinningNumbers() {
@@ -222,15 +210,11 @@ if (window.location.href.match('results.html') != null) {
     }
 
     updateClock(); // initial call
-
 }
-
 
     /*
         web3 changes
     */
-
-
 
 //added since error on web3 may be from race condition
 window.addEventListener('load', function() {
@@ -243,7 +227,6 @@ window.addEventListener('load', function() {
 
     web3.eth.defaultAccount = web3.eth.accounts[0];
 
-    //var BolitaContract = web3.eth.contract([ { "inputs": [], "stateMutability": "nonpayable", "type": "constructor" }, { "anonymous": false, "inputs": [ { "indexed": false, "internalType": "address", "name": "newAdminAddress", "type": "address" } ], "name": "AddedAdmin", "type": "event" }, { "anonymous": false, "inputs": [ { "indexed": false, "internalType": "address", "name": "newOwnerAddress", "type": "address" } ], "name": "OwnerSet", "type": "event" }, { "anonymous": false, "inputs": [], "name": "Paused", "type": "event" }, { "anonymous": false, "inputs": [ { "indexed": false, "internalType": "address", "name": "prevAdminAddress", "type": "address" } ], "name": "RemovedAdmin", "type": "event" }, { "anonymous": false, "inputs": [], "name": "Unpaused", "type": "event" }, { "inputs": [], "name": "adminAddress", "outputs": [ { "internalType": "address", "name": "", "type": "address" } ], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "ownerAddress", "outputs": [ { "internalType": "address", "name": "", "type": "address" } ], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "pause", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [], "name": "paused", "outputs": [ { "internalType": "bool", "name": "", "type": "bool" } ], "stateMutability": "view", "type": "function" }, { "inputs": [ { "internalType": "address", "name": "_newAdminAddress", "type": "address" } ], "name": "setAdmin", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [], "name": "unpause", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [ { "internalType": "address", "name": "_newOwnerAddress", "type": "address" } ], "name": "updateOwner", "outputs": [], "stateMutability": "nonpayable", "type": "function" } ])
     // address changes with each deploy on Remix, and would be a fixed addr if was deployed to testnet or mainnet
     var BolitaContract = new web3.eth.Contract([
         {
@@ -760,37 +743,30 @@ window.addEventListener('load', function() {
 
 
 /**
- * 
- * 
  *      PICK UP HERE: GET EVENT LISTENER WORKING, WAS UPDATED IN WEB3 1.X.X
- * 
- * 
  */
     
-        BolitaContract.events.BetAccepted(function(error, result){
-            
-            if (window.location.href.match('results.html') != null) {
-            
-                if(result) {
-                    latestNums.innerHTML = "Bettor: " + web3.toAscii(result.args.bettor) + " Bet on: " + web3.toAscii(result.args.numberBetOn);
-                }
-                else {
-                    latestNums.innerHTML = "I DIDNT WoRK CORRECTLY";
-                }
+    BolitaContract.events.BetAccepted(function(error, result){
+        
+        if (window.location.href.match('results.html') != null) {
+        
+            if(result) {
+                latestNums.innerHTML = "Bettor: " + web3.toAscii(result.args.bettor) + " Bet on: " + web3.toAscii(result.args.numberBetOn);
+            }
+            else {
+                latestNums.innerHTML = "I DIDNT WORK CORRECTLY";
+            }
         }
-
     });
 
     //add getter to results.html to verify blockchain connectivity
 
     if (window.location.href.match('popup.html') != null) {
 
-
         //BET ON FIRST DIGIT
         btnFirstBetSubmit.onclick = function() {
  
             BolitaContract.methods.betOnFirstDigit(document.getElementById("addresstext").value, document.getElementById("firstBetInput").value);
-
 
             console.log("1st BET BTN WAS CLICKED");
             console.log(document.getElementById("addresstext").value);
@@ -802,7 +778,6 @@ window.addEventListener('load', function() {
  
             BolitaContract.methods.betOnSecondDigit(document.getElementById("addresstext").value, document.getElementById("secondBetInput").value);
 
-
             console.log("2nd BET BTN WAS CLICKED");
             console.log(document.getElementById("addresstext").value);
             console.log(document.getElementById("secondBetInput").value);
@@ -812,7 +787,6 @@ window.addEventListener('load', function() {
         btnThirdBetSubmit.onclick = function() {
  
             BolitaContract.methods.betOnThirdDigit(document.getElementById("addresstext").value, document.getElementById("thirdBetInput").value);
-
 
             console.log("3rd BET BTN WAS CLICKED");
             console.log(document.getElementById("addresstext").value);
@@ -831,17 +805,14 @@ window.addEventListener('load', function() {
      *      $getJSON function() {
      *          //get latest #
      *          //save latest 3 digits as vars
-     *     }
-     *     
-     *       BolitaContract.methods.setWinningNumber(digit1, digit2, digit3)
+     *       }
+     *     BolitaContract.methods.setWinningNumber(digit1, digit2, digit3)
      *   }
      */
      if (window.location.href.match('results.html') != null) {
 
         btnLatestNums.onclick = function() {
             
-
-
             BolitaContract.methods.setWinningNumber(
                 firstWinningNum,
                 secondWinningNum,
@@ -850,23 +821,11 @@ window.addEventListener('load', function() {
             
             latestNums.innerHTML = "Hello World";
 
-
         }
-
      }
 
 });
 
-
-
-
-
-//contract abi
-//var bolitaContract = web3.eth.contract(asfasdfasdf);
-
-//deployed address that will be used - from remix for testing web3 injection
-//var bolitaAddress = bolitaContract.at(asdfasdfasdf)
-//console.log(bolitaAddress)
 
 /*bolitaAddress.setBet(function(error,result) {
     if(!error) {
@@ -880,81 +839,14 @@ $("#buttonIDTHATISTARGETTED").click(function() {
     bolitaAddress.setBet($("#firstBetInput").val(),$("#secondBetInput").val(),$("#thirdBetInput").val());
 });
 
+
 */
 
 /*
-
-
-[document.querySelectorAll(".firstBet"), document.querySelector('.btnFirstBet')].forEach(item => {
-    item.addEventListener('click', event => {
-        //handle click
-        item.style.opacity= 0.4;
-        item.addClass("active");
-    })
-});
-
-
-var elements = document.getElementsByClassName(".btnFirstBet");
-
-[].forEach.call(elements, function(currElement) {
-    currElemen
-    currElement.style.opacity= 0.4;
-    currElement.classList.add("active");
-    console.log(currElement.tagName);
-});
-
-
-document.getElementsByClassName(".btnFirstBet").forEach(item => {
-    item.addEventListener('click', event => {
-        //handle click
-        item.style.opacity= 0.4;
-       // element.classList.add("active");
-    })
-})
-
-
-
-
-function setFirstBet(value){
-    document.getElementById("firstBetInput").value= value;
-   
+//testing function
+function greeting() {
+    console.log('Hello World!');
 }
-
- document.getElementById("totalValue").innerHTML= "Total price: $" + 500*value;
-
-
-
-
-
-
-
-
-
-var elements = document.querySelectorAll('.btnFirstBet');
-for (var i = 0; i < elements.length; i++) {
-    elements[i].classList.remove("active");
-    elements[i].onclick = function (event) {
-        console.log("ONCLICK");
-        //remove all active class
-        removeClass();
-        if (event.elements[i].innerHTML === this.innerHTML) {
-            console.log("IN IF");
-            this.classList.add("active");
-        }
-    }
-}
-
-function removeClass(){
-  for (var i = 0; i < elements.length; i++) {
-    elements[i].classList.remove("active");
-  }
-}
-
-
-
-
-
-
-
-
+    
+setTimeout(greeting, 1000);
 */
