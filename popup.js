@@ -725,6 +725,30 @@ window.addEventListener('load', function() {
 
     console.log(BolitaContract);
 
+    var bolitaMakeBetEvent = BolitaContract.events.BetAccepted({}, 'latest');
+
+
+/**
+ * 
+ * 
+ *      PICK UP HERE: GET EVENT LISTENER WORKING, WAS UPDATED IN WEB3 1.X.X
+ * 
+ * 
+ */
+    
+        BolitaContract.events.BetAccepted(function(error, result){
+            
+            if (window.location.href.match('results.html') != null) {
+            
+                if(result) {
+                    latestNums.innerHTML = "Bettor: " + web3.toAscii(result.args.bettor) + " Bet on: " + web3.toAscii(result.args.numberBetOn);
+                }
+                else {
+                    latestNums.innerHTML = "I DIDNT WoRK CORRECTLY";
+                }
+        }
+
+    });
 
     //add getter to results.html to verify blockchain connectivity
 
@@ -732,7 +756,7 @@ window.addEventListener('load', function() {
 
         btnFirstBetSubmit.onclick = function() {
  
-            BolitaContract.methods.makeBet(document.getElementById("addresstext").value, document.getElementById("firstBetInput").value, 1);
+            BolitaContract.methods.betOnFirstDigit(document.getElementById("addresstext").value, document.getElementById("firstBetInput").value);
 
 
             console.log("1st BET BTN WAS CLICKED");
