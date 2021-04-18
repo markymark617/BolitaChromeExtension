@@ -50,14 +50,18 @@ contract Bolita is AccessController {
     
     event GotPaid(address _winner);
     
-    event BetCleared(address[] bettors);
+    event BetCleared(address[] bettors, BetType _betType);
     
     event TestEvent(address[] winners);
     
     //get list of addresses that bet on the winning number, uint16 is used for first, second, third, and all digits
     mapping(uint16 => mapping(BetType => address[])) mapOfBets;
+    
+    mapping(uint16 => address) mappingAddressToBetNum;
 
     mapping(address => bool) hasPlayerBetAlready;
+    
+    address[] players;
     
     //FOR USE WHEN A PLAYER WINS, BUT THERE IS NO ETH AVAILABLE
     mapping(address => uint256) amountOwedToPlayersForReimbursement;
@@ -150,19 +154,19 @@ contract Bolita is AccessController {
         public
         onlyAdmin
     {
-        address[] memory betsList;
-        
+
         for(uint16 i = 0; i < listOfNumbersBetOn.length; i++)
         {
-            betsList = mapOfBets[i][_betType];
-            
-            emit BetCleared(mapOfBets[i][_betType]);
-            delete mapOfBets[i][_betType];
-            
-            for(uint16 j = 0; j < betsList.length; j++) {
-                hasPlayerBetAlready[betsList[i]] = false;
-            }
-            
+            emit BetCleared(
+                mapOfBets[listOfNumbersBetOn[i]][_betType],
+                _betType
+            );
+            delete mapOfBets[listOfNumbersBetOn[i]][_betType];
+        }
+      
+
+        for(uint16 j = 0; j < players.length; j++) {
+            hasPlayerBetAlready[players[j]] = false;
         }
         
     }
@@ -364,6 +368,9 @@ contract Bolita is AccessController {
         bettingIsOpen
     {
         
+       players.push(_playerAddress);
+       
+       //replaced with list for now
         mapOfBets[numberBetOn][_betType].push(_playerAddress);
         hasPlayerBetAlready[_playerAddress] = true;
         listOfNumbersBetOn.push(numberBetOn);
