@@ -741,7 +741,14 @@ window.addEventListener('load', function() {
 
     var bolitaMakeBetEvent = BolitaContract.events.BetAccepted({}, 'latest');
 
+//                      listening to the following events:
+//winners
+//BetCleared
+//BettingIsOpen
 
+//FirstDigitWinningNumber
+//SecondDigitWinningNumber
+//ThirdDigitWinningNumber
 /**
  *      PICK UP HERE: GET EVENT LISTENER WORKING, WAS UPDATED IN WEB3 1.X.X
  */
@@ -755,6 +762,96 @@ window.addEventListener('load', function() {
             }
             else {
                 latestNums.innerHTML = "I DIDNT WORK CORRECTLY";
+            }
+        }
+    });
+
+    BolitaContract.events.FirstDigitWinningNumber(function(error, result){
+        
+        if (window.location.href.match('results.html') != null) {
+        
+            if(result) {
+                console.log("Got back the result:");
+                console.log(result);
+            }
+            else {
+                console.log("Event: FirstDigitWinningNumber returned an error:");
+                console.log(error);
+            }
+        }
+    });
+
+    BolitaContract.events.SecondDigitWinningNumber(function(error, result){
+        
+        if (window.location.href.match('results.html') != null) {
+        
+            if(result) {
+                console.log("Got back the result:");
+                console.log(result);
+            }
+            else {
+                console.log("Event: SecondDigitWinningNumber returned an error:");
+                console.log(error);
+            }
+        }
+    });
+
+    BolitaContract.events.ThirdDigitWinningNumber(function(error, result){
+        
+        if (window.location.href.match('results.html') != null) {
+        
+            if(result) {
+                console.log("Got back the result:");
+                console.log(result);
+            }
+            else {
+                console.log("Event: ThirdDigitWinningNumber returned an error:");
+                console.log(error);
+            }
+        }
+    });
+
+    BolitaContract.events.winners(function(error, result){
+        
+        if (window.location.href.match('results.html') != null) {
+        
+            if(result) {
+                console.log("Got back the result:");
+                console.log(result);
+            }
+            else {
+                console.log("Event: winners returned an error:");
+                console.log(error);
+            }
+        }
+    });
+
+    BolitaContract.events.BetCleared(function(error, result){
+        
+        if (window.location.href.match('results.html') != null) {
+        
+            if(result) {
+                console.log("Got back the result:");
+                console.log(result);
+            }
+            else {
+                console.log("Event: BetCleared returned an error:");
+                console.log(error);
+            }
+        }
+    });
+
+    BolitaContract.events.BettingIsOpen(function(error, result){
+        
+        if (window.location.href.match('results.html') != null) {
+        
+            if(result) {
+                console.log("Got back the result:");
+                console.log(result);
+            }
+            else {
+                console.log("Event: BettingIsOpen returned an error:");
+                console.log(error);
             }
         }
     });
@@ -826,21 +923,6 @@ window.addEventListener('load', function() {
 
 });
 
-
-/*bolitaAddress.setBet(function(error,result) {
-    if(!error) {
-        $("#firstBetInput").html(result[0]+' (' +result[1]');
-    } else {
-        console.log(error);
-    }
-});
-
-$("#buttonIDTHATISTARGETTED").click(function() {
-    bolitaAddress.setBet($("#firstBetInput").val(),$("#secondBetInput").val(),$("#thirdBetInput").val());
-});
-
-
-*/
 
 /*
 //testing function
