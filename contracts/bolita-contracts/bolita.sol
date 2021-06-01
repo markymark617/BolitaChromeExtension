@@ -74,20 +74,6 @@ contract Bolita is AccessController {
         _;
     }
 
-    modifier threeDigitChecker(uint16 _number)
-    {
-        require(
-            (_number/1000) <= 1 || _number == 0,
-            "Must be less than 999"
-        );
-        
-        require(
-            (_number/100) >= 1 || _number == 0,
-            "Must be three digits"
-        );
-        _;
-    }
-
     //move up to BolitaHelper
     modifier defaultBetAmount(uint256 _betAmount)
     {
@@ -235,7 +221,6 @@ contract Bolita is AccessController {
         public
         payable
         onlyAdmin
-        //threeDigitChecker(_newWinningNum)
         winningDigitChecker(_firstWinningNum)
         winningDigitChecker(_secondWinningNum)
         winningDigitChecker(_thirdWinningNum)
@@ -312,11 +297,6 @@ contract Bolita is AccessController {
         external
         payable
     {
-        require(
-            (_numberBetOn/10) < 1,
-            "Must be single digit"
-        );
-
         makeBet(_player, _numberBetOn, BetType.FIRSTDIGIT);
     }
     //@dev number length is enforced at UI level
@@ -324,11 +304,6 @@ contract Bolita is AccessController {
         external
         payable
     {
-        require(
-            (_numberBetOn/10) < 1,
-            "Must be single digit"
-        );
-
         makeBet(_player, _numberBetOn, BetType.SECONDDIGIT);
     }
     //@dev number length is enforced at UI level
@@ -336,10 +311,6 @@ contract Bolita is AccessController {
         external
         payable
     {
-        require(
-            (_numberBetOn/10) < 1,
-            "Must be single digit"
-        );
 
         makeBet(_player, _numberBetOn, BetType.THIRDDIGIT);
     }
@@ -348,11 +319,6 @@ contract Bolita is AccessController {
         external
         payable
     {
-        require(
-            (_numberBetOn/1000) < 1,
-            "Must be less than 999"
-        );
-
         makeBet(_player, _numberBetOn, BetType.ALLTHREE);   
     }
 
