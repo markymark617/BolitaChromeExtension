@@ -421,9 +421,6 @@ contract Bolita is AccessController {
             allDigitWinnings
         );
         
-    //TO BE REMOVED:        
-        // emit TestEvent(firstDigitWinners);   
-        
         //clear data
         clearBets(BetType.FIRSTDIGIT);
         clearBets(BetType.SECONDDIGIT);
