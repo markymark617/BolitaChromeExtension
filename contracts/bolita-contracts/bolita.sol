@@ -154,7 +154,6 @@ contract Bolita is AccessController {
         for(uint16 j = 0; j < players.length; j++) {
             hasPlayerBetAlready[players[j]] = false;
         }
-        
     }
 
     function closeBetting()
