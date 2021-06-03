@@ -2,8 +2,8 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "../common-contracts/SafeMath.sol";
-import "../common-contracts/AccessControl.sol";
+import "../contracts/common-contracts/SafeMath.sol";
+import "../contracts/common-contracts/AccessControl.sol";
 //one day we will track and make accessible all previous bet data
 //contract BolitaHistory {}
 
