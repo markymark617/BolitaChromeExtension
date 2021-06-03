@@ -11,12 +11,11 @@
     "deploy": "truffle migrate --reset",
     "test": "truffle test test/bolita.test.js"
   },
-  "author": "MarkF",
+  "author": "",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/markymark617/BolitaChromeExtension.git"
   },
-  "author": "",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/markymark617/BolitaChromeExtension/issues"
@@ -39,5 +38,8 @@
     "truffle-hdwallet-provider": "^1.0.17",
     "truffle-privatekey-provider": "^1.3.0",
     "web3": "^1.3.5"
+  },
+  "dependencies": {
+    "solc": "^0.8.0"
   }
 }
