@@ -17,18 +17,18 @@ contract Bolita is AccessController {
     using SafeMath for uint16;
     // using SafeMath for uint8;
 
-    bool bBettingIsOpen;
+    bool public bBettingIsOpen;
 
-    uint16 latestWinningNumber;
-    uint16 latestWinningFirstDigit;
-    uint16 latestWinningSecondDigit;
-    uint16 latestWinningThirdDigit;
+    uint16 public latestWinningNumber;
+    uint16 public latestWinningFirstDigit;
+    uint16 public latestWinningSecondDigit;
+    uint16 public latestWinningThirdDigit;
     
     enum BetType {FIRSTDIGIT, SECONDDIGIT, THIRDDIGIT, ALLTHREE}
 
 
     //BET AMOUNT LOCKED TO .005 ETH = 5 Finney
-    uint256 defaultBetAmountInt = 5000000000000000 wei;
+    uint256 public defaultBetAmountInt = 5000000000000000 wei;
     
     //TODO use safemath
     uint256 singleDigitWinnings = 5 * (defaultBetAmountInt);
@@ -108,7 +108,7 @@ contract Bolita is AccessController {
         payable 
     {
         bBettingIsOpen = true;
-        emit BettingIsOpen(true);
+        emit BettingIsOpen(bBettingIsOpen);
         //add require for value of ETH sent to contract on deploy
     }
     
