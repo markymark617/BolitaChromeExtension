@@ -26,7 +26,7 @@
 
 
 const PrivateKeyProvider = require("truffle-privatekey-provider");
-const privateKey = 'C7F038F9A424D7604EE05A53FED9920F4859C4D283ED9385B93913C13266571C';
+const privateKey = '0x9450712552098aa8553c5a4f9a7c0d206588a09198135782bc7101f72f0ed25d';
 
 module.exports = {
 

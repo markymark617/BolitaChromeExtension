@@ -186,11 +186,12 @@ contract Bolita is AccessController {
     event BetAccepted(address bettor,uint16 numberBetOn);
 
     event BettingIsOpen(bool bettingIsOpenStatus);
+    event BettingIsClosed(bool bettingIsClosedStatus);
 
-    //event WinningNumber(uint16 winningNum);
-    event FirstDigitWinningNumber(uint16 winningNumFirstDigit);
-    event SecondDigitWinningNumber(uint16 winningNumSecondDigit);
-    event ThirdDigitWinningNumber(uint16 winningNumThirdDigit);
+    event WinningNumbers(uint16 firstWinningNum, uint16 secondWinningNum, uint16 thirdWinningNum);
+    // event FirstDigitWinningNumber(uint16 winningNumFirstDigit);
+    // event SecondDigitWinningNumber(uint16 winningNumSecondDigit);
+    // event ThirdDigitWinningNumber(uint16 winningNumThirdDigit);
     
     event winners(address[] winners, BetType _betType);
     
@@ -238,13 +239,21 @@ contract Bolita is AccessController {
         );
         _;
     }
-
-        
+   
     modifier bettingIsOpen()
     {
         require(
             bBettingIsOpen == true,
             "Betting is closed"
+        );
+        _;
+    }
+
+    modifier bettingIsClosed()
+    {
+        require(
+            bBettingIsOpen == false,
+            "Betting is open"
         );
         _;
     }
@@ -282,81 +291,17 @@ contract Bolita is AccessController {
         return (mapOfBets[_numBetOn][BetType.FIRSTDIGIT]);
     }
 
-    function clearBets(BetType _betType)
-        public
-        onlyAdmin
-    {
-
-        for(uint16 i = 0; i < listOfNumbersBetOn.length; i++)
-        {
-            emit BetCleared(
-                mapOfBets[listOfNumbersBetOn[i]][_betType],
-                _betType
-            );
-            delete mapOfBets[listOfNumbersBetOn[i]][_betType];
-        }
-      
-
-        for(uint16 j = 0; j < players.length; j++) {
-            hasPlayerBetAlready[players[j]] = false;
-        }
-    }
-
+//@dev is a pre-req for setWinningNum, clearbets,
     function closeBetting()
         public
         onlyAdmin
     {
         bBettingIsOpen = false;
         emit BettingIsOpen(bBettingIsOpen);
+        emit BettingIsClosed(bBettingIsOpen);
     }
 
 
-    function payWinners(address[] memory _winners, uint256 _winningAmount)
-        public
-        onlyAdmin
-        payable
-    {
-        
-        for(uint i = 0; i<_winners.length; i++) {
-            require(
-                _winners[i] != address(0x0),
-                "CANNOT USE TEST ACCOUNTS"
-            );
-            
-            payable(_winners[i]).transfer(_winningAmount);
-            
-            emit GotPaid(_winners[i]);
-        }
-    }
-    
-    function getWinners(
-      //  uint16 _winningNumber,
-        uint16 _firstWinningDigit,
-        uint16 _secondWinningDigit,
-        uint16 _thirdWinningDigit
-    )
-        internal
-        returns(
-            address[] memory firstDigitWinners,
-            address[] memory secondDigitWinners,
-            address[] memory thirdDigitWinners,
-            address[] memory allDigitWinners
-        )
-    {
-        
-        firstDigitWinners = mapOfBets[_firstWinningDigit][BetType.FIRSTDIGIT];
-        secondDigitWinners = mapOfBets[_secondWinningDigit][BetType.SECONDDIGIT];
-        thirdDigitWinners = mapOfBets[_thirdWinningDigit][BetType.THIRDDIGIT];
-       // allDigitWinners = mapOfBets[_winningNumber][BetType.ALLTHREE];
-        
-        emit winners(firstDigitWinners, BetType.FIRSTDIGIT);
-        emit winners(secondDigitWinners, BetType.SECONDDIGIT);
-        emit winners(thirdDigitWinners, BetType.THIRDDIGIT);
-        emit winners(allDigitWinners, BetType.ALLTHREE);
-        
-       // winningPlayers.push(mapOfBets[_winningNumber]);
-    }
-    
     //TODO: upgrade with SafeMath
     //TODO: change from memory to calldata so public can be external and lower the gas
     //function setWinningNumber(uint16 _newWinningNum)
@@ -366,32 +311,26 @@ contract Bolita is AccessController {
         public
         payable
         onlyAdmin
+        bettingIsClosed
         winningDigitChecker(_firstWinningNum)
         winningDigitChecker(_secondWinningNum)
         winningDigitChecker(_thirdWinningNum)
     {
 
-      //  used to support 3 digit bets, so winning numbers were calculated like below
-      // most removed to prevent code hoarding, some kept to upgrade one day
+        emit WinningNumbers(
+            _firstWinningNum,
+            _secondWinningNum,
+            _thirdWinningNum
+        );
 
-        emit FirstDigitWinningNumber(_firstWinningNum);
-                
-        //latestWinningSecondDigit = ((_newWinningNum/10)%10);
-        //latestWinningSecondDigit = _secondWinningNum;
-        emit SecondDigitWinningNumber(_secondWinningNum);
-                
-
-        emit ThirdDigitWinningNumber(_thirdWinningNum);
         
         address[] memory firstDigitWinners;
         address[] memory secondDigitWinners;
         address[] memory thirdDigitWinners;
-        address[] memory allDigitWinners;
         
         (firstDigitWinners,
             secondDigitWinners,
-            thirdDigitWinners,
-            allDigitWinners
+            thirdDigitWinners
         ) =  
         getWinners(
             _firstWinningNum,
@@ -415,24 +354,85 @@ contract Bolita is AccessController {
             singleDigitWinnings
         );
         
-        payWinners(
-            firstDigitWinners,
-            allDigitWinnings
-        );
 
         //clear data
         clearBets(BetType.FIRSTDIGIT);
         clearBets(BetType.SECONDDIGIT);
         clearBets(BetType.THIRDDIGIT);
-        clearBets(BetType.ALLTHREE);
 
-        //take snapshot
+        //take snapshot -- for future development
 
         //open back up for betting
         bBettingIsOpen = true;
         emit BettingIsOpen(bBettingIsOpen);
         
     }
+
+
+    function getWinners(
+        uint16 _firstWinningDigit,
+        uint16 _secondWinningDigit,
+        uint16 _thirdWinningDigit
+    )
+        internal
+        returns(
+            address[] memory firstDigitWinners,
+            address[] memory secondDigitWinners,
+            address[] memory thirdDigitWinners
+        )
+    {
+        
+        firstDigitWinners = mapOfBets[_firstWinningDigit][BetType.FIRSTDIGIT];
+        secondDigitWinners = mapOfBets[_secondWinningDigit][BetType.SECONDDIGIT];
+        thirdDigitWinners = mapOfBets[_thirdWinningDigit][BetType.THIRDDIGIT];
+        
+        emit winners(firstDigitWinners, BetType.FIRSTDIGIT);
+        emit winners(secondDigitWinners, BetType.SECONDDIGIT);
+        emit winners(thirdDigitWinners, BetType.THIRDDIGIT);
+
+    }
+    
+
+    function payWinners(address[] memory _winners, uint256 _winningAmount)
+        public
+        onlyAdmin
+        payable
+    {
+        
+        for(uint i = 0; i<_winners.length; i++) {
+            require(
+                _winners[i] != address(0x0),
+                "CANNOT USE TEST ACCOUNTS"
+            );
+            
+            payable(_winners[i]).transfer(_winningAmount);
+            
+            emit GotPaid(_winners[i]);
+        }
+    }
+
+    //now requires betting to be closed first
+    function clearBets(BetType _betType)
+        public
+        bettingIsClosed
+        onlyAdmin
+    {
+
+        for(uint16 i = 0; i < listOfNumbersBetOn.length; i++)
+        {
+            emit BetCleared(
+                mapOfBets[listOfNumbersBetOn[i]][_betType],
+                _betType
+            );
+            delete mapOfBets[listOfNumbersBetOn[i]][_betType];
+        }
+      
+
+        for(uint16 j = 0; j < players.length; j++) {
+            hasPlayerBetAlready[players[j]] = false;
+        }
+    }
+    
 
     //@dev number length is enforced at UI level. This function is mapped to the submit button for the valid field
     function betOnFirstDigit(address _player, uint16 _numberBetOn)
@@ -457,12 +457,12 @@ contract Bolita is AccessController {
         makeBet(_player, _numberBetOn, BetType.THIRDDIGIT);
     }
     //@dev number length is enforced at UI level
-    function betOnAllThree(address _player, uint16 _numberBetOn)
-        external
-        payable
-    {
-        makeBet(_player, _numberBetOn, BetType.ALLTHREE);   
-    }
+    // function betOnAllThree(address _player, uint16 _numberBetOn)
+    //     external
+    //     payable
+    // {
+    //     makeBet(_player, _numberBetOn, BetType.ALLTHREE);   
+    // }
 
     function makeBet(
         address _playerAddress,
