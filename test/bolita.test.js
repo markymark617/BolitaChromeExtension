@@ -74,6 +74,9 @@ contract("Bolita", ([owner, user1]) => {
         });
 
 
+        //make bet with zero_address account - catchrevert paywinners error
+
+
     });
 
     describe("Betting Positive Cases", () => {
@@ -136,7 +139,7 @@ contract("Bolita", ([owner, user1]) => {
 
     describe("Access Control testing", () => {
         it("should enfore onlyAdmin for clearBets function", async () => {
-            
+
             
 
         });

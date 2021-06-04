@@ -17,17 +17,25 @@ contract Bolita is AccessController {
     using SafeMath for uint16;
     // using SafeMath for uint8;
 
-    bool public bBettingIsOpen;
 
-    uint16 public latestWinningNumber;
-    uint16 public latestWinningFirstDigit;
-    uint16 public latestWinningSecondDigit;
-    uint16 public latestWinningThirdDigit;
-    
+    /*
+        VARS
+     */
+    address[] players;
+    //get list of addresses that bet on the winning number, uint16 is used for first, second, third, and all digits
+    mapping(uint16 => mapping(BetType => address[])) mapOfBets;
+    mapping(uint16 => address) mappingAddressToBetNum;
+    mapping(address => bool) hasPlayerBetAlready;
+    //BELOW IS FOR USE WHEN A PLAYER WINS, BUT THERE IS NO ETH AVAILABLE
+    mapping(address => uint256) amountOwedToPlayersForReimbursement;
+
+
+    bool public bBettingIsOpen;
+    bool public calledByContractFunction;
     enum BetType {FIRSTDIGIT, SECONDDIGIT, THIRDDIGIT, ALLTHREE}
 
-
     //BET AMOUNT LOCKED TO .005 ETH = 5 Finney
+    //TODO make constant?
     uint256 public defaultBetAmountInt = 5000000000000000 wei;
     
     //TODO use safemath
@@ -35,38 +43,23 @@ contract Bolita is AccessController {
     uint256 allDigitWinnings = 50 * (defaultBetAmountInt);
     uint16[] listOfNumbersBetOn;
     
+
+    /*
+        EVENTS
+     */
     event Received(address, uint);
-
     event BetAccepted(address bettor,uint16 numberBetOn);
-
     event BettingIsOpen(bool bettingIsOpenStatus);
     event BettingIsClosed(bool bettingIsClosedStatus);
-
     event WinningNumbers(uint16 firstWinningNum, uint16 secondWinningNum, uint16 thirdWinningNum);
-    // event FirstDigitWinningNumber(uint16 winningNumFirstDigit);
-    // event SecondDigitWinningNumber(uint16 winningNumSecondDigit);
-    // event ThirdDigitWinningNumber(uint16 winningNumThirdDigit);
-    
     event winners(address[] winners, BetType _betType);
-    
     event GotPaid(address _winner);
-    
     event BetCleared(address[] bettors, BetType _betType);
-    
-    event TestEvent(address[] winners);
-    
-    //get list of addresses that bet on the winning number, uint16 is used for first, second, third, and all digits
-    mapping(uint16 => mapping(BetType => address[])) mapOfBets;
-    
-    mapping(uint16 => address) mappingAddressToBetNum;
 
-    mapping(address => bool) hasPlayerBetAlready;
-    
-    address[] players;
-    
-    //FOR USE WHEN A PLAYER WINS, BUT THERE IS NO ETH AVAILABLE
-    mapping(address => uint256) amountOwedToPlayersForReimbursement;
 
+    /*
+        MODIFIERS
+     */
     modifier winningDigitChecker(uint16 _number)
     {
         require(_number >= 0 && _number <= 9,
@@ -74,7 +67,6 @@ contract Bolita is AccessController {
         );
         _;
     }
-
     //move up to BolitaHelper
     modifier defaultBetAmount(uint256 _betAmount)
     {
@@ -84,7 +76,6 @@ contract Bolita is AccessController {
         );
         _;
     }
-    
     modifier hasAddressBetAlready(address _player)
     {
         require(
@@ -93,7 +84,6 @@ contract Bolita is AccessController {
         );
         _;
     }
-   
     modifier bettingIsOpen()
     {
         require(
@@ -102,7 +92,6 @@ contract Bolita is AccessController {
         );
         _;
     }
-
     modifier bettingIsClosed()
     {
         require(
@@ -112,6 +101,15 @@ contract Bolita is AccessController {
         _;
     }
     
+    modifier onlyCalledByContract()
+    {
+        require(
+            calledByContractFunction == true,
+            "BLOCKING EOA CALL"
+        );
+        _;
+    }
+
     //fallback function
     constructor()
         payable 
@@ -137,6 +135,14 @@ contract Bolita is AccessController {
         payable(address(this)).transfer(msg.value);
     }
 
+
+    function withdrawBalanceFromContract(uint256 _amount)
+        public
+        onlyOwner
+    {
+        payable(ownerAddress).transfer(_amount);
+    }
+
     function getSINGLEAddressesByBet(uint16 _numBetOn)
         public
         view
@@ -145,149 +151,9 @@ contract Bolita is AccessController {
         return (mapOfBets[_numBetOn][BetType.FIRSTDIGIT]);
     }
 
-//@dev is a pre-req for setWinningNum, clearbets,
-    function closeBetting()
-        public
-        onlyAdmin
-    {
-        bBettingIsOpen = false;
-        emit BettingIsOpen(bBettingIsOpen);
-        emit BettingIsClosed(bBettingIsOpen);
-    }
-
-
-    //TODO: upgrade with SafeMath
-    //TODO: change from memory to calldata so public can be external and lower the gas
-    //function setWinningNumber(uint16 _newWinningNum)
-    function setWinningNumber(uint16 _firstWinningNum,
-                              uint16 _secondWinningNum,
-                              uint16 _thirdWinningNum)
-        public
-        payable
-        onlyAdmin
-        bettingIsClosed
-        winningDigitChecker(_firstWinningNum)
-        winningDigitChecker(_secondWinningNum)
-        winningDigitChecker(_thirdWinningNum)
-    {
-
-        emit WinningNumbers(
-            _firstWinningNum,
-            _secondWinningNum,
-            _thirdWinningNum
-        );
-
-        
-        address[] memory firstDigitWinners;
-        address[] memory secondDigitWinners;
-        address[] memory thirdDigitWinners;
-        
-        (firstDigitWinners,
-            secondDigitWinners,
-            thirdDigitWinners
-        ) =  
-        getWinners(
-            _firstWinningNum,
-            _secondWinningNum,
-            _thirdWinningNum
-        );
-        
-        
-        payWinners(
-            firstDigitWinners,
-            singleDigitWinnings
-        );
-        
-        payWinners(
-            secondDigitWinners,
-            singleDigitWinnings
-        );
-        
-        payWinners(
-            thirdDigitWinners,
-            singleDigitWinnings
-        );
-        
-
-        //clear data
-        clearBets(BetType.FIRSTDIGIT);
-        clearBets(BetType.SECONDDIGIT);
-        clearBets(BetType.THIRDDIGIT);
-
-        //take snapshot -- for future development
-
-        //open back up for betting
-        bBettingIsOpen = true;
-        emit BettingIsOpen(bBettingIsOpen);
-        
-    }
-
-
-    function getWinners(
-        uint16 _firstWinningDigit,
-        uint16 _secondWinningDigit,
-        uint16 _thirdWinningDigit
-    )
-        internal
-        returns(
-            address[] memory firstDigitWinners,
-            address[] memory secondDigitWinners,
-            address[] memory thirdDigitWinners
-        )
-    {
-        
-        firstDigitWinners = mapOfBets[_firstWinningDigit][BetType.FIRSTDIGIT];
-        secondDigitWinners = mapOfBets[_secondWinningDigit][BetType.SECONDDIGIT];
-        thirdDigitWinners = mapOfBets[_thirdWinningDigit][BetType.THIRDDIGIT];
-        
-        emit winners(firstDigitWinners, BetType.FIRSTDIGIT);
-        emit winners(secondDigitWinners, BetType.SECONDDIGIT);
-        emit winners(thirdDigitWinners, BetType.THIRDDIGIT);
-
-    }
-    
-
-    function payWinners(address[] memory _winners, uint256 _winningAmount)
-        public
-        onlyAdmin
-        payable
-    {
-        
-        for(uint i = 0; i<_winners.length; i++) {
-            require(
-                _winners[i] != address(0x0),
-                "CANNOT USE TEST ACCOUNTS"
-            );
-            
-            payable(_winners[i]).transfer(_winningAmount);
-            
-            emit GotPaid(_winners[i]);
-        }
-    }
-
-    //now requires betting to be closed first
-    function clearBets(BetType _betType)
-        public
-        bettingIsClosed
-        onlyAdmin
-    {
-
-        for(uint16 i = 0; i < listOfNumbersBetOn.length; i++)
-        {
-            emit BetCleared(
-                mapOfBets[listOfNumbersBetOn[i]][_betType],
-                _betType
-            );
-            delete mapOfBets[listOfNumbersBetOn[i]][_betType];
-        }
-      
-
-        for(uint16 j = 0; j < players.length; j++) {
-            hasPlayerBetAlready[players[j]] = false;
-        }
-    }
-    
-
+    /*
+            BETTING FUNCTIONS
+     */
     //@dev number length is enforced at UI level. This function is mapped to the submit button for the valid field
     function betOnFirstDigit(address _player, uint16 _numberBetOn)
         external
@@ -310,13 +176,7 @@ contract Bolita is AccessController {
 
         makeBet(_player, _numberBetOn, BetType.THIRDDIGIT);
     }
-    //@dev number length is enforced at UI level
-    // function betOnAllThree(address _player, uint16 _numberBetOn)
-    //     external
-    //     payable
-    // {
-    //     makeBet(_player, _numberBetOn, BetType.ALLTHREE);   
-    // }
+
 
     function makeBet(
         address _playerAddress,
@@ -340,20 +200,179 @@ contract Bolita is AccessController {
 
         emit BetAccepted(_playerAddress,numberBetOn);
     }
-    
-    function getContractValue()
-        external
-        view
-        returns(uint256)
+
+
+
+    /*
+        CLOSE BETTING + SETTLEMENT FUNCTIONS
+    */
+
+
+    /**
+        @dev closeBetting() is a pre-req for setWinningNum + its child functions, and clearbets
+    */
+    function closeBetting()
+        public
+        onlyAdmin
     {
-        return address(this).balance;
+        bBettingIsOpen = false;
+        emit BettingIsOpen(bBettingIsOpen);
+        emit BettingIsClosed(bBettingIsOpen);
+    }
+
+
+    //TODO: upgrade with SafeMath
+    //TODO: change from memory to calldata so public can be external and lower the gas
+    //function setWinningNumber(uint16 _newWinningNum)
+
+    /**
+    * parent function called by admin address to set the winning number, clear everything, and open betting again for the next day
+    * emits WinningNumbers to announce the 3 winning numbers
+    * @dev uses winningDigitChecker modifer to check for single digit
+    * @param _firstWinningNum -- single digit winning number for BetType 0
+    * @param _secondWinningNum -- single digit winning number for BetType 1
+    * @param _thirdWinningNum -- single digit winning number for BetType 2
+    */
+    function setWinningNumber(uint16 _firstWinningNum,
+                              uint16 _secondWinningNum,
+                              uint16 _thirdWinningNum)
+        public
+        payable
+        onlyAdmin
+        bettingIsClosed
+        winningDigitChecker(_firstWinningNum)
+        winningDigitChecker(_secondWinningNum)
+        winningDigitChecker(_thirdWinningNum)
+    {
+
+        emit WinningNumbers(
+            _firstWinningNum,
+            _secondWinningNum,
+            _thirdWinningNum
+        );
+
+        //bool used so admin cannot arbitrarily assign winners - preventing bad actor risk
+        calledByContractFunction = true;
+        
+        processWinners(
+            _firstWinningNum,
+            _secondWinningNum,
+            _thirdWinningNum
+        );
+
+       
+        //clear data
+        clearBets(BetType.FIRSTDIGIT);
+        clearBets(BetType.SECONDDIGIT);
+        clearBets(BetType.THIRDDIGIT);
+
+        //take snapshot -- for future development
+
+        //open back up for betting
+        bBettingIsOpen = true;
+        emit BettingIsOpen(bBettingIsOpen);
+
+        //reset bad actor check
+        calledByContractFunction = false;
         
     }
 
-    function withdrawBalanceFromContract(uint256 _amount)
+    /*
+    *  
+     */
+    function processWinners(
+        uint16 _firstWinningNum,
+        uint16 _secondWinningNum,
+        uint16 _thirdWinningNum
+    )
         public
-        onlyOwner
+        onlyAdmin
+        payable
+        bettingIsClosed
+        onlyCalledByContract
+        winningDigitChecker(_firstWinningNum)
+        winningDigitChecker(_secondWinningNum)
+        winningDigitChecker(_thirdWinningNum)
     {
-        payable(ownerAddress).transfer(_amount);
+        
+        emit winners(
+            mapOfBets[_firstWinningNum][BetType.FIRSTDIGIT],
+            BetType.FIRSTDIGIT
+        );
+        emit winners(
+            mapOfBets[_secondWinningNum][BetType.SECONDDIGIT],
+            BetType.SECONDDIGIT
+        );
+        emit winners(
+            mapOfBets[_thirdWinningNum][BetType.THIRDDIGIT],
+            BetType.THIRDDIGIT
+        );
+
+
+        payWinners(
+            mapOfBets[_firstWinningNum][BetType.FIRSTDIGIT],
+            singleDigitWinnings
+        );
+        
+        payWinners(
+            mapOfBets[_secondWinningNum][BetType.SECONDDIGIT],
+            singleDigitWinnings
+        );
+        
+        payWinners(
+            mapOfBets[_thirdWinningNum][BetType.THIRDDIGIT],
+            singleDigitWinnings
+        );
+
     }
+    
+    /**
+    *  called by setWinningNumber to pay out each winning address
+    * @dev 
+    */
+    function payWinners(address[] memory _winners, uint256 _winningAmount)
+        public
+        onlyAdmin
+        payable
+        onlyCalledByContract
+    {
+        
+        for(uint i = 0; i<_winners.length; i++) {
+            require(
+                _winners[i] != address(0x0),
+                "CANNOT USE TEST ACCOUNTS"
+            );
+            
+            payable(_winners[i]).transfer(_winningAmount);
+            
+            emit GotPaid(_winners[i]);
+        }
+    }
+
+    /**
+    *  clears data from the day to start new betting day
+    * emits betCleared for each address in loop
+    * @dev  now requires betting to be closed first, please call closeBetting() from admin address first
+    */
+    function clearBets(BetType _betType)
+        public
+        bettingIsClosed
+        onlyAdmin
+    {
+
+        for(uint16 i = 0; i < listOfNumbersBetOn.length; i++)
+        {
+            emit BetCleared(
+                mapOfBets[listOfNumbersBetOn[i]][_betType],
+                _betType
+            );
+            delete mapOfBets[listOfNumbersBetOn[i]][_betType];
+        }
+      
+
+        for(uint16 j = 0; j < players.length; j++) {
+            hasPlayerBetAlready[players[j]] = false;
+        }
+    }
+    
 }
