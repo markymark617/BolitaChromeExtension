@@ -77,6 +77,9 @@ contract("Bolita", ([owner, user1]) => {
         //make bet with zero_address account - catchrevert paywinners error
 
 
+        //cannot pay winners wihtout onlyCalledByContract --- bad actor test
+
+
     });
 
     describe("Betting Positive Cases", () => {
