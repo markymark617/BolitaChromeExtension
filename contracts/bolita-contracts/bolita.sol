@@ -18,9 +18,9 @@ contract Bolita is AccessController {
     // using SafeMath for uint8;
 
 
-    /*
-        VARS
-     */
+    ////////////////////////////////////////////////
+    //                  VARS                      //
+    ////////////////////////////////////////////////
     address[] players;
     //get list of addresses that bet on the winning number, uint16 is used for first, second, third, and all digits
     mapping(uint16 => mapping(BetType => address[])) mapOfBets;
@@ -39,14 +39,14 @@ contract Bolita is AccessController {
     uint256 public defaultBetAmountInt = 5000000000000000 wei;
     
     //TODO use safemath
-    uint256 singleDigitWinnings = 5 * (defaultBetAmountInt);
-    uint256 allDigitWinnings = 50 * (defaultBetAmountInt);
+    uint256 singleDigitWinnings = (defaultBetAmountInt).mul(5);
+    uint256 allDigitWinnings = (defaultBetAmountInt).mul(50);
     uint16[] listOfNumbersBetOn;
     
 
-    /*
-        EVENTS
-     */
+    /////////////////////////////////////////////////
+    //                   EVENTS                    //
+     ////////////////////////////////////////////////
     event Received(address, uint);
     event BetAccepted(address bettor,uint16 numberBetOn);
     event BettingIsOpen(bool bettingIsOpenStatus);
@@ -57,9 +57,9 @@ contract Bolita is AccessController {
     event BetCleared(address[] bettors, BetType _betType);
 
 
-    /*
-        MODIFIERS
-     */
+    ////////////////////////////////////////////////
+    //                  MODIFIERS                 //
+    ////////////////////////////////////////////////
     modifier winningDigitChecker(uint16 _number)
     {
         require(_number >= 0 && _number <= 9,
@@ -151,9 +151,10 @@ contract Bolita is AccessController {
         return (mapOfBets[_numBetOn][BetType.FIRSTDIGIT]);
     }
 
-    /*
-            BETTING FUNCTIONS
-     */
+    ////////////////////////////////////////////////
+    //             BETTING FUNCTIONS              //
+    ////////////////////////////////////////////////
+
     //@dev number length is enforced at UI level. This function is mapped to the submit button for the valid field
     function betOnFirstDigit(address _player, uint16 _numberBetOn)
         external
@@ -203,13 +204,13 @@ contract Bolita is AccessController {
 
 
 
-    /*
-        CLOSE BETTING + SETTLEMENT FUNCTIONS
-    */
+    ////////////////////////////////////////////////
+    //    CLOSE BETTING + SETTLEMENT FUNCTIONS    //
+    ////////////////////////////////////////////////
 
 
     /**
-        @dev closeBetting() is a pre-req for setWinningNum + its child functions, and clearbets
+    * @dev closeBetting() is a pre-req for setWinningNum + its child functions, and clearbets
     */
     function closeBetting()
         public
@@ -221,9 +222,8 @@ contract Bolita is AccessController {
     }
 
 
-    //TODO: upgrade with SafeMath
+
     //TODO: change from memory to calldata so public can be external and lower the gas
-    //function setWinningNumber(uint16 _newWinningNum)
 
     /**
     * parent function called by admin address to set the winning number, clear everything, and open betting again for the next day
@@ -236,7 +236,7 @@ contract Bolita is AccessController {
     function setWinningNumber(uint16 _firstWinningNum,
                               uint16 _secondWinningNum,
                               uint16 _thirdWinningNum)
-        public
+        external
         payable
         onlyAdmin
         bettingIsClosed
@@ -268,18 +268,19 @@ contract Bolita is AccessController {
 
         //take snapshot -- for future development
 
-        //open back up for betting
-        bBettingIsOpen = true;
-        emit BettingIsOpen(bBettingIsOpen);
 
         //reset bad actor check
         calledByContractFunction = false;
         
+        //open back up for betting
+        bBettingIsOpen = true;
+        emit BettingIsOpen(bBettingIsOpen);
     }
 
-    /*
-    *  
-     */
+    /** 
+    * emits winners calls payWinners
+    * @dev only can be called during setWinningNumber using onlyCalledByContract modifier to prevent bad actor
+    */
     function processWinners(
         uint16 _firstWinningNum,
         uint16 _secondWinningNum,
@@ -327,8 +328,8 @@ contract Bolita is AccessController {
     }
     
     /**
-    *  called by setWinningNumber to pay out each winning address
-    * @dev 
+    *  called by setWinningNumber via processWinners to pay out each winning address
+    * @dev only can be called during setWinningNumber using onlyCalledByContract modifier to prevent bad actor
     */
     function payWinners(address[] memory _winners, uint256 _winningAmount)
         public
