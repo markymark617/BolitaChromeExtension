@@ -167,7 +167,6 @@ contract Bolita is AccessController {
         //BELOW IS FOR USE WHEN A PLAYER WINS, BUT THERE IS NO ETH AVAILABLE
         mapping(address => uint256) amountOwedToPlayersForReimbursement;
 
-
         bool public bBettingIsOpen;
         bool public calledByContractFunction;
         enum BetType {FIRSTDIGIT, SECONDDIGIT, THIRDDIGIT, ALLTHREE}
@@ -183,7 +182,7 @@ contract Bolita is AccessController {
 
     /////////////////////////////////////////////////
     //                   EVENTS                    //
-     ////////////////////////////////////////////////
+    /////////////////////////////////////////////////
         event Received(address, uint);
         event BetAccepted(address bettor,uint16 numberBetOn);
         event BettingIsOpen(bool bettingIsOpenStatus);
@@ -315,7 +314,6 @@ contract Bolita is AccessController {
             makeBet(_player, _numberBetOn, BetType.THIRDDIGIT);
         }
 
-
         function makeBet(
             address _playerAddress,
             uint16 numberBetOn,
@@ -340,11 +338,9 @@ contract Bolita is AccessController {
         }
 
 
-
     ////////////////////////////////////////////////
     //    CLOSE BETTING + SETTLEMENT FUNCTIONS    //
     ////////////////////////////////////////////////
-
 
         /**
         * @dev closeBetting() is a pre-req for setWinningNum + its child functions, and clearbets
@@ -358,9 +354,8 @@ contract Bolita is AccessController {
             emit BettingIsClosed(bBettingIsOpen);
         }
 
-
-
         /**
+        * setWinningNumber is the main function called by the web app
         * parent function called by admin address to set the winning number, clear everything, and open betting again for the next day
         * emits WinningNumbers to announce the 3 winning numbers
         * @dev uses winningDigitChecker modifer to check for single digit
@@ -459,7 +454,6 @@ contract Bolita is AccessController {
                 mapOfBets[_thirdWinningNum][BetType.THIRDDIGIT],
                 singleDigitWinnings
             );
-
         }
         
         /**
@@ -518,7 +512,6 @@ contract Bolita is AccessController {
                 hasPlayerBetAlready[players[j]] = false;
             }
         }
-    
 }
 
 

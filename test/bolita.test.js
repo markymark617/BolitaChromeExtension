@@ -89,6 +89,7 @@ contract("Bolita", ([owner, user1]) => {
 
         });
         
+        //MAKEBET TESTS
         it("should accept valid bet on first digit", async () => {
 
             const numberBetOnUser1 = 9;
@@ -135,9 +136,69 @@ contract("Bolita", ([owner, user1]) => {
             assert.equal(event.numberBetOn, numberBetOnUser1);
         });
 
+        //FIRSTDIGITBET TESTS
 
+
+
+        //SECONDDIGITBET TESTS
+
+
+        //THIRDDIGITBET TESTS
 
     });
+
+
+
+    describe("Winning Number Positive Cases", () => {
+        
+        beforeEach(async () => {
+            bolitaDeploy = await bolita.new({from: owner});
+            //add ETH to contract 
+            await bolitaDeploy.sendETHtoContract({from: owner, value: web3.utils.toWei("10")});
+
+            const numberBetOnUser1 = 9;
+
+            await bolitaDeploy.makeBet(user1, numberBetOnUser1, firstDigitBetTypeEnumVal, {from: user1, value: web3.utils.toWei(".005")});
+            
+            const event = await getLastEvent("BetAccepted", bolitaDeploy);
+            assert.equal(event.bettor, user1);
+            assert.equal(event.numberBetOn, numberBetOnUser1);
+
+        });
+        
+        it("should payout winning bet", async () => {
+            
+            const user1BalanceBeforeWinning = await web3.eth.getBalance(user1);
+       
+            const winnings = web3.utils.toWei('.025','ether');
+
+            const expectedUser1BalanceAfter = web3.utils.toBN(user1BalanceBeforeWinning).add(web3.utils.toBN(winnings));
+
+            const firstWinningNum = 9;
+            const secondWinningNum = 9;
+            const thirdWinningNum = 9;
+
+            //close betting before settng winning num
+            await bolitaDeploy.closeBetting();
+            await bolitaDeploy.setWinningNumber(firstWinningNum, secondWinningNum, thirdWinningNum, {from: owner});
+
+            const user1BalanceAfterWinning = await web3.eth.getBalance(user1);
+            
+            //user1 should receive winnings
+            assert.equal((user1BalanceAfterWinning).toString(),
+                        expectedUser1BalanceAfter.toString()
+
+            );
+            
+        });
+
+
+        //should clear bets after setting winning number
+
+        //should emit bettingIsOpen
+    
+    });
+
 
 
     describe("Access Control testing", () => {
