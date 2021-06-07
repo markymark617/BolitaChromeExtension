@@ -151,6 +151,7 @@ library SafeMath {
     }
 }
 
+
 contract Bolita is AccessController {
     using SafeMath for uint256;
     using SafeMath for uint16;
@@ -163,7 +164,6 @@ contract Bolita is AccessController {
         address[] playersNotYetPaidOut;
         //get list of addresses that bet on the winning number, uint16 is used for first, second, third, and all digits
         mapping(uint16 => mapping(BetType => address[])) mapOfBets;
-        mapping(uint16 => address) mappingAddressToBetNum;
         mapping(address => bool) hasPlayerBetAlready;
         //BELOW IS FOR USE WHEN A PLAYER WINS, BUT THERE IS NO ETH AVAILABLE
         mapping(address => uint256) amountOwedToPlayersForReimbursement;
@@ -298,14 +298,14 @@ contract Bolita is AccessController {
 
 
     function withdrawBalanceFromContract(uint256 _amount)
-        public
+        external
         onlyOwner
     {
         payable(ownerAddress).transfer(_amount);
     }
 
     function getAddressesByBet(uint16 _numBetOn)
-        public
+        external
         view
         returns (address[] memory)
     {
@@ -371,7 +371,7 @@ contract Bolita is AccessController {
         * @dev closeBetting() is a pre-req for setWinningNum + its child functions, and clearbets
         */
         function closeBetting()
-            public
+            external
             onlyAdmin
         {
             bBettingIsOpen = false;
