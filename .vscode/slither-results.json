@@ -51285,21 +51285,21 @@
 			},
 			{
 				"type": "node",
-				"name": "clearBets(BetType.SECONDDIGIT)",
+				"name": "clearBets(BetType.THIRDDIGIT)",
 				"source_mapping": {
-					"start": 9302,
-					"length": 30,
+					"start": 9347,
+					"length": 29,
 					"filename_used": "c:\\dev\\bolita_launcher\\contracts\\bolita-contracts\\Bolita.sol",
 					"filename_relative": "contracts\\bolita-contracts\\Bolita.sol",
 					"filename_absolute": "c:\\dev\\bolita_launcher\\contracts\\bolita-contracts\\Bolita.sol",
 					"filename_short": "bolita-contracts\\Bolita.sol",
 					"is_dependency": false,
 					"lines": [
-						274
+						275
 					],
 					"starting_column": 13,
-					"ending_column": 43,
-					"_ext_source_hash": "c7f13f2bca339e5ee167b95a620cbaa1"
+					"ending_column": 42,
+					"_ext_source_hash": "fe86a71f3c903d548afa02702a00aeb4"
 				},
 				"type_specific_fields": {
 					"parent": {
@@ -52314,21 +52314,21 @@
 			},
 			{
 				"type": "node",
-				"name": "clearBets(BetType.THIRDDIGIT)",
+				"name": "clearBets(BetType.SECONDDIGIT)",
 				"source_mapping": {
-					"start": 9347,
-					"length": 29,
+					"start": 9302,
+					"length": 30,
 					"filename_used": "c:\\dev\\bolita_launcher\\contracts\\bolita-contracts\\Bolita.sol",
 					"filename_relative": "contracts\\bolita-contracts\\Bolita.sol",
 					"filename_absolute": "c:\\dev\\bolita_launcher\\contracts\\bolita-contracts\\Bolita.sol",
 					"filename_short": "bolita-contracts\\Bolita.sol",
 					"is_dependency": false,
 					"lines": [
-						275
+						274
 					],
 					"starting_column": 13,
-					"ending_column": 42,
-					"_ext_source_hash": "fe86a71f3c903d548afa02702a00aeb4"
+					"ending_column": 43,
+					"_ext_source_hash": "c7f13f2bca339e5ee167b95a620cbaa1"
 				},
 				"type_specific_fields": {
 					"parent": {
@@ -54388,10 +54388,10 @@
 				}
 			}
 		],
-		"description": "Reentrancy in Bolita.setWinningNumber(uint16,uint16,uint16) (bolita-contracts\\Bolita.sol#246-285):\n\tExternal calls:\n\t- processWinners(_firstWinningNum,_secondWinningNum,_thirdWinningNum) (bolita-contracts\\Bolita.sol#266-270)\n\t\t- address(_winners[i]).transfer(_winningAmount) (bolita-contracts\\Bolita.sol#360)\n\tState variables written after the call(s):\n\t- bBettingIsOpen = true (bolita-contracts\\Bolita.sol#283)\n\t- calledByContractFunction = false (bolita-contracts\\Bolita.sol#280)\n\t- clearBets(BetType.FIRSTDIGIT) (bolita-contracts\\Bolita.sol#273)\n\t\t- hasPlayerBetAlready[players[j]] = false (bolita-contracts\\Bolita.sol#390)\n\t- clearBets(BetType.SECONDDIGIT) (bolita-contracts\\Bolita.sol#274)\n\t\t- hasPlayerBetAlready[players[j]] = false (bolita-contracts\\Bolita.sol#390)\n\t- clearBets(BetType.THIRDDIGIT) (bolita-contracts\\Bolita.sol#275)\n\t\t- hasPlayerBetAlready[players[j]] = false (bolita-contracts\\Bolita.sol#390)\n\t- clearBets(BetType.FIRSTDIGIT) (bolita-contracts\\Bolita.sol#273)\n\t\t- delete mapOfBets[listOfNumbersBetOn[i]][_betType] (bolita-contracts\\Bolita.sol#385)\n\t- clearBets(BetType.SECONDDIGIT) (bolita-contracts\\Bolita.sol#274)\n\t\t- delete mapOfBets[listOfNumbersBetOn[i]][_betType] (bolita-contracts\\Bolita.sol#385)\n\t- clearBets(BetType.THIRDDIGIT) (bolita-contracts\\Bolita.sol#275)\n\t\t- delete mapOfBets[listOfNumbersBetOn[i]][_betType] (bolita-contracts\\Bolita.sol#385)\n\tEvent emitted after the call(s):\n\t- BetCleared(mapOfBets[listOfNumbersBetOn[i]][_betType],_betType) (bolita-contracts\\Bolita.sol#381-384)\n\t\t- clearBets(BetType.SECONDDIGIT) (bolita-contracts\\Bolita.sol#274)\n\t- BetCleared(mapOfBets[listOfNumbersBetOn[i]][_betType],_betType) (bolita-contracts\\Bolita.sol#381-384)\n\t\t- clearBets(BetType.THIRDDIGIT) (bolita-contracts\\Bolita.sol#275)\n\t- BetCleared(mapOfBets[listOfNumbersBetOn[i]][_betType],_betType) (bolita-contracts\\Bolita.sol#381-384)\n\t\t- clearBets(BetType.FIRSTDIGIT) (bolita-contracts\\Bolita.sol#273)\n\t- BettingIsOpen(bBettingIsOpen) (bolita-contracts\\Bolita.sol#284)\n",
-		"markdown": "Reentrancy in [Bolita.setWinningNumber(uint16,uint16,uint16)](contracts\\bolita-contracts\\Bolita.sol#L246-L285):\n\tExternal calls:\n\t- [processWinners(_firstWinningNum,_secondWinningNum,_thirdWinningNum)](contracts\\bolita-contracts\\Bolita.sol#L266-L270)\n\t\t- [address(_winners[i]).transfer(_winningAmount)](contracts\\bolita-contracts\\Bolita.sol#L360)\n\tState variables written after the call(s):\n\t- [bBettingIsOpen = true](contracts\\bolita-contracts\\Bolita.sol#L283)\n\t- [calledByContractFunction = false](contracts\\bolita-contracts\\Bolita.sol#L280)\n\t- [clearBets(BetType.FIRSTDIGIT)](contracts\\bolita-contracts\\Bolita.sol#L273)\n\t\t- [hasPlayerBetAlready[players[j]] = false](contracts\\bolita-contracts\\Bolita.sol#L390)\n\t- [clearBets(BetType.SECONDDIGIT)](contracts\\bolita-contracts\\Bolita.sol#L274)\n\t\t- [hasPlayerBetAlready[players[j]] = false](contracts\\bolita-contracts\\Bolita.sol#L390)\n\t- [clearBets(BetType.THIRDDIGIT)](contracts\\bolita-contracts\\Bolita.sol#L275)\n\t\t- [hasPlayerBetAlready[players[j]] = false](contracts\\bolita-contracts\\Bolita.sol#L390)\n\t- [clearBets(BetType.FIRSTDIGIT)](contracts\\bolita-contracts\\Bolita.sol#L273)\n\t\t- [delete mapOfBets[listOfNumbersBetOn[i]][_betType]](contracts\\bolita-contracts\\Bolita.sol#L385)\n\t- [clearBets(BetType.SECONDDIGIT)](contracts\\bolita-contracts\\Bolita.sol#L274)\n\t\t- [delete mapOfBets[listOfNumbersBetOn[i]][_betType]](contracts\\bolita-contracts\\Bolita.sol#L385)\n\t- [clearBets(BetType.THIRDDIGIT)](contracts\\bolita-contracts\\Bolita.sol#L275)\n\t\t- [delete mapOfBets[listOfNumbersBetOn[i]][_betType]](contracts\\bolita-contracts\\Bolita.sol#L385)\n\tEvent emitted after the call(s):\n\t- [BetCleared(mapOfBets[listOfNumbersBetOn[i]][_betType],_betType)](contracts\\bolita-contracts\\Bolita.sol#L381-L384)\n\t\t- [clearBets(BetType.SECONDDIGIT)](contracts\\bolita-contracts\\Bolita.sol#L274)\n\t- [BetCleared(mapOfBets[listOfNumbersBetOn[i]][_betType],_betType)](contracts\\bolita-contracts\\Bolita.sol#L381-L384)\n\t\t- [clearBets(BetType.THIRDDIGIT)](contracts\\bolita-contracts\\Bolita.sol#L275)\n\t- [BetCleared(mapOfBets[listOfNumbersBetOn[i]][_betType],_betType)](contracts\\bolita-contracts\\Bolita.sol#L381-L384)\n\t\t- [clearBets(BetType.FIRSTDIGIT)](contracts\\bolita-contracts\\Bolita.sol#L273)\n\t- [BettingIsOpen(bBettingIsOpen)](contracts\\bolita-contracts\\Bolita.sol#L284)\n",
+		"description": "Reentrancy in Bolita.setWinningNumber(uint16,uint16,uint16) (bolita-contracts\\Bolita.sol#246-285):\n\tExternal calls:\n\t- processWinners(_firstWinningNum,_secondWinningNum,_thirdWinningNum) (bolita-contracts\\Bolita.sol#266-270)\n\t\t- address(_winners[i]).transfer(_winningAmount) (bolita-contracts\\Bolita.sol#360)\n\tState variables written after the call(s):\n\t- bBettingIsOpen = true (bolita-contracts\\Bolita.sol#283)\n\t- calledByContractFunction = false (bolita-contracts\\Bolita.sol#280)\n\t- clearBets(BetType.FIRSTDIGIT) (bolita-contracts\\Bolita.sol#273)\n\t\t- hasPlayerBetAlready[players[j]] = false (bolita-contracts\\Bolita.sol#390)\n\t- clearBets(BetType.SECONDDIGIT) (bolita-contracts\\Bolita.sol#274)\n\t\t- hasPlayerBetAlready[players[j]] = false (bolita-contracts\\Bolita.sol#390)\n\t- clearBets(BetType.THIRDDIGIT) (bolita-contracts\\Bolita.sol#275)\n\t\t- hasPlayerBetAlready[players[j]] = false (bolita-contracts\\Bolita.sol#390)\n\t- clearBets(BetType.FIRSTDIGIT) (bolita-contracts\\Bolita.sol#273)\n\t\t- delete mapOfBets[listOfNumbersBetOn[i]][_betType] (bolita-contracts\\Bolita.sol#385)\n\t- clearBets(BetType.SECONDDIGIT) (bolita-contracts\\Bolita.sol#274)\n\t\t- delete mapOfBets[listOfNumbersBetOn[i]][_betType] (bolita-contracts\\Bolita.sol#385)\n\t- clearBets(BetType.THIRDDIGIT) (bolita-contracts\\Bolita.sol#275)\n\t\t- delete mapOfBets[listOfNumbersBetOn[i]][_betType] (bolita-contracts\\Bolita.sol#385)\n\tEvent emitted after the call(s):\n\t- BetCleared(mapOfBets[listOfNumbersBetOn[i]][_betType],_betType) (bolita-contracts\\Bolita.sol#381-384)\n\t\t- clearBets(BetType.THIRDDIGIT) (bolita-contracts\\Bolita.sol#275)\n\t- BetCleared(mapOfBets[listOfNumbersBetOn[i]][_betType],_betType) (bolita-contracts\\Bolita.sol#381-384)\n\t\t- clearBets(BetType.SECONDDIGIT) (bolita-contracts\\Bolita.sol#274)\n\t- BetCleared(mapOfBets[listOfNumbersBetOn[i]][_betType],_betType) (bolita-contracts\\Bolita.sol#381-384)\n\t\t- clearBets(BetType.FIRSTDIGIT) (bolita-contracts\\Bolita.sol#273)\n\t- BettingIsOpen(bBettingIsOpen) (bolita-contracts\\Bolita.sol#284)\n",
+		"markdown": "Reentrancy in [Bolita.setWinningNumber(uint16,uint16,uint16)](contracts\\bolita-contracts\\Bolita.sol#L246-L285):\n\tExternal calls:\n\t- [processWinners(_firstWinningNum,_secondWinningNum,_thirdWinningNum)](contracts\\bolita-contracts\\Bolita.sol#L266-L270)\n\t\t- [address(_winners[i]).transfer(_winningAmount)](contracts\\bolita-contracts\\Bolita.sol#L360)\n\tState variables written after the call(s):\n\t- [bBettingIsOpen = true](contracts\\bolita-contracts\\Bolita.sol#L283)\n\t- [calledByContractFunction = false](contracts\\bolita-contracts\\Bolita.sol#L280)\n\t- [clearBets(BetType.FIRSTDIGIT)](contracts\\bolita-contracts\\Bolita.sol#L273)\n\t\t- [hasPlayerBetAlready[players[j]] = false](contracts\\bolita-contracts\\Bolita.sol#L390)\n\t- [clearBets(BetType.SECONDDIGIT)](contracts\\bolita-contracts\\Bolita.sol#L274)\n\t\t- [hasPlayerBetAlready[players[j]] = false](contracts\\bolita-contracts\\Bolita.sol#L390)\n\t- [clearBets(BetType.THIRDDIGIT)](contracts\\bolita-contracts\\Bolita.sol#L275)\n\t\t- [hasPlayerBetAlready[players[j]] = false](contracts\\bolita-contracts\\Bolita.sol#L390)\n\t- [clearBets(BetType.FIRSTDIGIT)](contracts\\bolita-contracts\\Bolita.sol#L273)\n\t\t- [delete mapOfBets[listOfNumbersBetOn[i]][_betType]](contracts\\bolita-contracts\\Bolita.sol#L385)\n\t- [clearBets(BetType.SECONDDIGIT)](contracts\\bolita-contracts\\Bolita.sol#L274)\n\t\t- [delete mapOfBets[listOfNumbersBetOn[i]][_betType]](contracts\\bolita-contracts\\Bolita.sol#L385)\n\t- [clearBets(BetType.THIRDDIGIT)](contracts\\bolita-contracts\\Bolita.sol#L275)\n\t\t- [delete mapOfBets[listOfNumbersBetOn[i]][_betType]](contracts\\bolita-contracts\\Bolita.sol#L385)\n\tEvent emitted after the call(s):\n\t- [BetCleared(mapOfBets[listOfNumbersBetOn[i]][_betType],_betType)](contracts\\bolita-contracts\\Bolita.sol#L381-L384)\n\t\t- [clearBets(BetType.THIRDDIGIT)](contracts\\bolita-contracts\\Bolita.sol#L275)\n\t- [BetCleared(mapOfBets[listOfNumbersBetOn[i]][_betType],_betType)](contracts\\bolita-contracts\\Bolita.sol#L381-L384)\n\t\t- [clearBets(BetType.SECONDDIGIT)](contracts\\bolita-contracts\\Bolita.sol#L274)\n\t- [BetCleared(mapOfBets[listOfNumbersBetOn[i]][_betType],_betType)](contracts\\bolita-contracts\\Bolita.sol#L381-L384)\n\t\t- [clearBets(BetType.FIRSTDIGIT)](contracts\\bolita-contracts\\Bolita.sol#L273)\n\t- [BettingIsOpen(bBettingIsOpen)](contracts\\bolita-contracts\\Bolita.sol#L284)\n",
 		"first_markdown_element": "contracts\\bolita-contracts\\Bolita.sol#L246-L285",
-		"id": "3b4dec7e6a817f21d8a1513fc53c7ed0766a13cab8a50008309bc5d35326a9ca",
+		"id": "959bb0c11150688685f40c6f84fbc2428cb09600d11cd887761f2aa066d33712",
 		"check": "reentrancy-unlimited-gas",
 		"impact": "Informational",
 		"confidence": "Medium"

@@ -271,46 +271,50 @@ contract Bolita is AccessController {
             _;
         }
 
-    //fallback function
-    constructor()
-        payable 
-    {
-        bBettingIsOpen = true;
-        emit BettingIsOpen(bBettingIsOpen);
-        //add require for value of ETH sent to contract on deploy
-    }
-    
-    fallback() external payable { 
-        //console.log("FALLBACK");
-    }
-    
+    ////////////////////////////////////////////////
+    //                  CORE                      //
+    ////////////////////////////////////////////////
 
-    receive() external payable {
-        emit Received(msg.sender, msg.value);
-    }
-    
-    function sendETHtoContract()
-        external
-        payable
-    {
-        payable(address(this)).transfer(msg.value);
-    }
+        //fallback function
+        constructor()
+            payable 
+        {
+            bBettingIsOpen = true;
+            emit BettingIsOpen(bBettingIsOpen);
+            //add require for value of ETH sent to contract on deploy
+        }
+        
+        fallback() external payable { 
+            //console.log("FALLBACK");
+        }
+        
+
+        receive() external payable {
+            emit Received(msg.sender, msg.value);
+        }
+        
+        function sendETHtoContract()
+            external
+            payable
+        {
+            payable(address(this)).transfer(msg.value);
+        }
 
 
-    function withdrawBalanceFromContract(uint256 _amount)
-        external
-        onlyOwner
-    {
-        payable(ownerAddress).transfer(_amount);
-    }
+        function withdrawBalanceFromContract(uint256 _amount)
+            external
+            onlyOwner
+        {
+            payable(ownerAddress).transfer(_amount);
+        }
 
-    function getAddressesByBet(uint16 _numBetOn)
-        external
-        view
-        returns (address[] memory)
-    {
-        return (mapOfBets[_numBetOn][BetType.FIRSTDIGIT]);
-    }
+        function getAddressesByBet(uint16 _numBetOn)
+            external
+            view
+            returns (address[] memory)
+        {
+            return (mapOfBets[_numBetOn][BetType.FIRSTDIGIT]);
+        }
 
     ////////////////////////////////////////////////
     //             BETTING FUNCTIONS              //
@@ -335,7 +339,6 @@ contract Bolita is AccessController {
             external
             payable
         {
-
             makeBet(_player, _numberBetOn, BetType.THIRDDIGIT);
         }
 
@@ -463,7 +466,6 @@ contract Bolita is AccessController {
                 mapOfBets[_thirdWinningNum][BetType.THIRDDIGIT],
                 BetType.THIRDDIGIT
             );
-
 
             payWinners(
                 mapOfBets[_firstWinningNum][BetType.FIRSTDIGIT],
