@@ -101,7 +101,7 @@ contract Bolita is AccessController {
             _;
         }
 
-        modifier addressBalanceChecker(address[] memory _winners)
+        modifier bolitaContractBalanceChecker(address[] memory _winners)
         {
             uint256 totalPayout = (_winners.length).mul(singleDigitWinnings);
             if(address(this).balance < totalPayout)
@@ -120,7 +120,8 @@ contract Bolita is AccessController {
                     
                 }
             }            
-
+            require(address(this).balance >= totalPayout,
+                    "NOT ENOUGH FUNDS");
             _;
         }
 
@@ -351,7 +352,7 @@ contract Bolita is AccessController {
             payable
             onlyCalledByContract
             bettingIsClosed
-            addressBalanceChecker(_winners)
+            bolitaContractBalanceChecker(_winners)
         {
             
             for(uint i = 0; i<_winners.length; i++) {

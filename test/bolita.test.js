@@ -240,6 +240,56 @@ contract("Bolita", ([owner, user1]) => {
 
 
 
+    describe("Winning Number Negative Cases", () => {
+        
+        beforeEach(async () => {
+            bolitaDeploy = await bolita.new({from: owner});
+            //add ETH to contract 
+            await bolitaDeploy.sendETHtoContract({from: owner, value: web3.utils.toWei(".01")});
+
+            const numberBetOnUser1 = 9;
+
+            await bolitaDeploy.makeBet(user1, numberBetOnUser1, firstDigitBetTypeEnumVal, {from: user1, value: web3.utils.toWei(".005")});
+            
+            const event = await getLastEvent("BetAccepted", bolitaDeploy);
+            assert.equal(event.bettor, user1);
+            assert.equal(event.numberBetOn, numberBetOnUser1);
+
+        });
+        
+        it("should revert if there are not enough funds", async () => {
+            
+            const user1BalanceBeforeWinning = await web3.eth.getBalance(user1);
+       
+            const winnings = web3.utils.toWei('.025','ether');
+
+            const expectedUser1BalanceAfter = web3.utils.toBN(user1BalanceBeforeWinning).add(web3.utils.toBN(winnings));
+
+            const firstWinningNum = 9;
+            const secondWinningNum = 9;
+            const thirdWinningNum = 9;
+
+            //close betting before settng winning num
+            await bolitaDeploy.closeBetting();
+            await catchRevert(bolitaDeploy.setWinningNumber(firstWinningNum, secondWinningNum, thirdWinningNum, {from: owner}),
+                "revert NOT ENOUGH FUNDS"
+            );
+
+            const user1BalanceAfterWinning = await web3.eth.getBalance(user1);
+            
+            //user1 should NOT receive winnings
+            assert.equal((user1BalanceAfterWinning).toString(),
+            user1BalanceAfterWinning.toString()
+
+            );
+            
+        });
+
+    });
+
+
+
+
     describe("Access Control testing", () => {
         it("should enfore onlyAdmin for clearBets function", async () => {
 
