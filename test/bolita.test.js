@@ -193,7 +193,46 @@ contract("Bolita", ([owner, user1]) => {
         });
 
 
-        //should clear bets after setting winning number
+        it("should clear bets after setting winning number", async () => {
+            
+            const user1BalanceBeforeWinning = await web3.eth.getBalance(user1);
+       
+            const winnings = web3.utils.toWei('.025','ether');
+
+            const expectedUser1BalanceAfter = web3.utils.toBN(user1BalanceBeforeWinning).add(web3.utils.toBN(winnings));
+
+
+            const getAddressByBetValsBefore = await bolitaDeploy.getAddressesByBet(9);
+
+            const firstWinningNum = 9;
+            const secondWinningNum = 9;
+            const thirdWinningNum = 9;
+
+            //close betting before settng winning num
+            await bolitaDeploy.closeBetting();
+            await bolitaDeploy.setWinningNumber(firstWinningNum, secondWinningNum, thirdWinningNum, {from: owner});
+
+            const user1BalanceAfterWinning = await web3.eth.getBalance(user1);
+
+            const getAddressByBetValsAfter = await bolitaDeploy.getAddressesByBet(9);
+            
+            //user1 should receive winnings
+            assert.equal((user1BalanceAfterWinning).toString(),
+                        expectedUser1BalanceAfter.toString()
+
+            );
+            
+            assert.equal((getAddressByBetValsBefore).toString(), user1);
+
+            assert.equal((getAddressByBetValsAfter).toString(), '' );
+
+
+        });
+
+
+
+
+        //
 
         //should emit bettingIsOpen
     

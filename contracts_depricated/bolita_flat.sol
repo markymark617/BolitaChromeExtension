@@ -160,6 +160,7 @@ contract Bolita is AccessController {
     //                  VARS                      //
     ////////////////////////////////////////////////
         address[] players;
+        address[] playersNotYetPaidOut;
         //get list of addresses that bet on the winning number, uint16 is used for first, second, third, and all digits
         mapping(uint16 => mapping(BetType => address[])) mapOfBets;
         mapping(uint16 => address) mappingAddressToBetNum;
@@ -169,14 +170,13 @@ contract Bolita is AccessController {
 
         bool public bBettingIsOpen;
         bool public calledByContractFunction;
+        bool public bPaymentsAreBacklogged;
         enum BetType {FIRSTDIGIT, SECONDDIGIT, THIRDDIGIT, ALLTHREE}
 
         //BET AMOUNT LOCKED TO .005 ETH = 5 Finney
-        //TODO make constant?
-        uint256 public defaultBetAmountInt = 5000000000000000 wei;
+        uint256 constant DEFAULT_BET_AMOUNT_INT = 5000000000000000 wei;
         
-        uint256 singleDigitWinnings = (defaultBetAmountInt).mul(5);
-        uint256 allDigitWinnings = (defaultBetAmountInt).mul(50);
+        uint256 public singleDigitWinnings = (DEFAULT_BET_AMOUNT_INT).mul(5);
         uint16[] listOfNumbersBetOn;
     
 
@@ -190,7 +190,9 @@ contract Bolita is AccessController {
         event WinningNumbers(uint16 firstWinningNum, uint16 secondWinningNum, uint16 thirdWinningNum);
         event winners(address[] winners, BetType _betType);
         event GotPaid(address _winner);
+        event PaymentIsQueued(address _winnerNotYetPaid);
         event BetCleared(address[] bettors, BetType _betType);
+        event ALERTFundingNeeded(uint256 amountNeeded);
 
 
     ////////////////////////////////////////////////
@@ -207,7 +209,7 @@ contract Bolita is AccessController {
         modifier defaultBetAmount(uint256 _betAmount)
         {
             require(
-                defaultBetAmountInt == _betAmount,
+                DEFAULT_BET_AMOUNT_INT == _betAmount,
                 "Bet Amount must be .005 ETH"
             );
             _;
@@ -246,6 +248,29 @@ contract Bolita is AccessController {
             _;
         }
 
+        modifier addressBalanceChecker(address[] memory _winners)
+        {
+            uint256 totalPayout = (_winners.length).mul(singleDigitWinnings);
+            if(address(this).balance < totalPayout)
+            {
+                emit ALERTFundingNeeded(totalPayout);
+                bPaymentsAreBacklogged = true;
+
+                for(uint i = 0; i<_winners.length; i++) {
+                    
+                    emit PaymentIsQueued(_winners[i]);
+                    if(amountOwedToPlayersForReimbursement[_winners[i]] == 0)
+                    {
+                        playersNotYetPaidOut.push(_winners[i]);
+                    }
+                    amountOwedToPlayersForReimbursement[_winners[i]] += singleDigitWinnings;
+                    
+                }
+            }            
+
+            _;
+        }
+
     //fallback function
     constructor()
         payable 
@@ -279,7 +304,7 @@ contract Bolita is AccessController {
         payable(ownerAddress).transfer(_amount);
     }
 
-    function getSINGLEAddressesByBet(uint16 _numBetOn)
+    function getAddressesByBet(uint16 _numBetOn)
         public
         view
         returns (address[] memory)
@@ -326,9 +351,9 @@ contract Bolita is AccessController {
             bettingIsOpen
         {
             
-        players.push(_playerAddress);
-        
-        //replaced with list for now
+            players.push(_playerAddress);
+
+            //replaced with list for now
             mapOfBets[numberBetOn][_betType].push(_playerAddress);
             hasPlayerBetAlready[_playerAddress] = true;
             listOfNumbersBetOn.push(numberBetOn);
@@ -455,7 +480,7 @@ contract Bolita is AccessController {
                 singleDigitWinnings
             );
         }
-        
+
         /**
         *  called by setWinningNumber via processWinners to pay out each winning address
         * @dev only can be called during setWinningNumber using onlyCalledByContract modifier to prevent bad actor
@@ -470,6 +495,7 @@ contract Bolita is AccessController {
             payable
             onlyCalledByContract
             bettingIsClosed
+            addressBalanceChecker(_winners)
         {
             
             for(uint i = 0; i<_winners.length; i++) {
@@ -479,8 +505,7 @@ contract Bolita is AccessController {
                 );
                 
                 payable(_winners[i]).transfer(_winningAmount);
-                
-                emit GotPaid(_winners[i]);
+                emit GotPaid(_winners[i]);   
             }
         }
 
@@ -511,6 +536,42 @@ contract Bolita is AccessController {
             for(uint16 j = 0; j < players.length; j++) {
                 hasPlayerBetAlready[players[j]] = false;
             }
+        }
+
+    ////////////////////////////////////////////////
+    //              ADMIN FUNCTIONS               //
+    ////////////////////////////////////////////////
+
+        function payoutBackloggedWinners()
+            public
+            payable
+            onlyAdmin
+        {
+            
+            require(playersNotYetPaidOut.length > 0,
+                    "NO BACKLOGGED WINNERS"
+            );
+
+            uint256 totalPayout = (playersNotYetPaidOut.length).mul(singleDigitWinnings);
+            if(address(this).balance >= totalPayout) {                
+
+                for(uint i = 0; i<playersNotYetPaidOut.length; i++) {
+                    require(
+                        playersNotYetPaidOut[i] != address(0x0),
+                        "CANNOT USE TEST ACCOUNTS"
+                    );
+                    
+                    payable(playersNotYetPaidOut[i]).transfer(amountOwedToPlayersForReimbursement[playersNotYetPaidOut[i]]);
+                    emit GotPaid(playersNotYetPaidOut[i]);   
+                }
+
+                bPaymentsAreBacklogged = false;
+            
+            }
+            else {
+                emit ALERTFundingNeeded(totalPayout);
+            }
+ 
         }
 }
 

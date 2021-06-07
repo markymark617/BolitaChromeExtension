@@ -216,7 +216,13 @@ if (window.location.href.match('results.html') != null) {
         web3 changes
     */
 
-//added since error on web3 may be from race condition
+//added since error on web3 may be from race condition\
+
+//infura could be injected here
+//localhost would be replaced with websocket
+
+//deploy on rinkiby testnet
+//next to robstein testnet
 window.addEventListener('load', function() {
 
     if (typeof web3 !== 'undefined') {

@@ -65,7 +65,7 @@ contract AccessController {
     }
 
     function updateOwner(address _newOwnerAddress) 
-        public
+        external
         onlyOwner
     {
         require(
