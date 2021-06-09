@@ -245,6 +245,19 @@ window.addEventListener('load', function() {
             "inputs": [
                 {
                     "indexed": false,
+                    "internalType": "uint256",
+                    "name": "amountNeeded",
+                    "type": "uint256"
+                }
+            ],
+            "name": "ALERTFundingNeeded",
+            "type": "event"
+        },
+        {
+            "anonymous": false,
+            "inputs": [
+                {
+                    "indexed": false,
                     "internalType": "address",
                     "name": "newAdminAddress",
                     "type": "address"
@@ -297,11 +310,11 @@ window.addEventListener('load', function() {
                 {
                     "indexed": false,
                     "internalType": "bool",
-                    "name": "bettingIsOpenStatus",
+                    "name": "bettingIsClosedStatus",
                     "type": "bool"
                 }
             ],
-            "name": "BettingIsOpen",
+            "name": "BettingIsClosed",
             "type": "event"
         },
         {
@@ -309,12 +322,12 @@ window.addEventListener('load', function() {
             "inputs": [
                 {
                     "indexed": false,
-                    "internalType": "uint16",
-                    "name": "winningNumFirstDigit",
-                    "type": "uint16"
+                    "internalType": "bool",
+                    "name": "bettingIsOpenStatus",
+                    "type": "bool"
                 }
             ],
-            "name": "FirstDigitWinningNumber",
+            "name": "BettingIsOpen",
             "type": "event"
         },
         {
@@ -355,6 +368,19 @@ window.addEventListener('load', function() {
                 {
                     "indexed": false,
                     "internalType": "address",
+                    "name": "_winnerNotYetPaid",
+                    "type": "address"
+                }
+            ],
+            "name": "PaymentIsQueued",
+            "type": "event"
+        },
+        {
+            "anonymous": false,
+            "inputs": [
+                {
+                    "indexed": false,
+                    "internalType": "address",
                     "name": "",
                     "type": "address"
                 },
@@ -383,47 +409,33 @@ window.addEventListener('load', function() {
         },
         {
             "anonymous": false,
-            "inputs": [
-                {
-                    "indexed": false,
-                    "internalType": "uint16",
-                    "name": "winningNumSecondDigit",
-                    "type": "uint16"
-                }
-            ],
-            "name": "SecondDigitWinningNumber",
-            "type": "event"
-        },
-        {
-            "anonymous": false,
-            "inputs": [
-                {
-                    "indexed": false,
-                    "internalType": "address[]",
-                    "name": "winners",
-                    "type": "address[]"
-                }
-            ],
-            "name": "TestEvent",
-            "type": "event"
-        },
-        {
-            "anonymous": false,
-            "inputs": [
-                {
-                    "indexed": false,
-                    "internalType": "uint16",
-                    "name": "winningNumThirdDigit",
-                    "type": "uint16"
-                }
-            ],
-            "name": "ThirdDigitWinningNumber",
-            "type": "event"
-        },
-        {
-            "anonymous": false,
             "inputs": [],
             "name": "Unpaused",
+            "type": "event"
+        },
+        {
+            "anonymous": false,
+            "inputs": [
+                {
+                    "indexed": false,
+                    "internalType": "uint16",
+                    "name": "firstWinningNum",
+                    "type": "uint16"
+                },
+                {
+                    "indexed": false,
+                    "internalType": "uint16",
+                    "name": "secondWinningNum",
+                    "type": "uint16"
+                },
+                {
+                    "indexed": false,
+                    "internalType": "uint16",
+                    "name": "thirdWinningNum",
+                    "type": "uint16"
+                }
+            ],
+            "name": "WinningNumbers",
             "type": "event"
         },
         {
@@ -463,21 +475,29 @@ window.addEventListener('load', function() {
             "type": "function"
         },
         {
-            "inputs": [
+            "inputs": [],
+            "name": "bBettingIsOpen",
+            "outputs": [
                 {
-                    "internalType": "address",
-                    "name": "_player",
-                    "type": "address"
-                },
-                {
-                    "internalType": "uint16",
-                    "name": "_numberBetOn",
-                    "type": "uint16"
+                    "internalType": "bool",
+                    "name": "",
+                    "type": "bool"
                 }
             ],
-            "name": "betOnAllThree",
-            "outputs": [],
-            "stateMutability": "payable",
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "inputs": [],
+            "name": "bPaymentsAreBacklogged",
+            "outputs": [
+                {
+                    "internalType": "bool",
+                    "name": "",
+                    "type": "bool"
+                }
+            ],
+            "stateMutability": "view",
             "type": "function"
         },
         {
@@ -535,6 +555,19 @@ window.addEventListener('load', function() {
             "type": "function"
         },
         {
+            "inputs": [],
+            "name": "calledByContractFunction",
+            "outputs": [
+                {
+                    "internalType": "bool",
+                    "name": "",
+                    "type": "bool"
+                }
+            ],
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
             "inputs": [
                 {
                     "internalType": "enum Bolita.BetType",
@@ -555,19 +588,6 @@ window.addEventListener('load', function() {
             "type": "function"
         },
         {
-            "inputs": [],
-            "name": "getContractValue",
-            "outputs": [
-                {
-                    "internalType": "uint256",
-                    "name": "",
-                    "type": "uint256"
-                }
-            ],
-            "stateMutability": "view",
-            "type": "function"
-        },
-        {
             "inputs": [
                 {
                     "internalType": "uint16",
@@ -575,7 +595,7 @@ window.addEventListener('load', function() {
                     "type": "uint16"
                 }
             ],
-            "name": "getSINGLEAddressesByBet",
+            "name": "getAddressesByBet",
             "outputs": [
                 {
                     "internalType": "address[]",
@@ -662,6 +682,36 @@ window.addEventListener('load', function() {
         },
         {
             "inputs": [],
+            "name": "payoutBackloggedWinners",
+            "outputs": [],
+            "stateMutability": "payable",
+            "type": "function"
+        },
+        {
+            "inputs": [
+                {
+                    "internalType": "uint16",
+                    "name": "_firstWinningNum",
+                    "type": "uint16"
+                },
+                {
+                    "internalType": "uint16",
+                    "name": "_secondWinningNum",
+                    "type": "uint16"
+                },
+                {
+                    "internalType": "uint16",
+                    "name": "_thirdWinningNum",
+                    "type": "uint16"
+                }
+            ],
+            "name": "processWinners",
+            "outputs": [],
+            "stateMutability": "payable",
+            "type": "function"
+        },
+        {
+            "inputs": [],
             "name": "sendETHtoContract",
             "outputs": [],
             "stateMutability": "payable",
@@ -701,6 +751,19 @@ window.addEventListener('load', function() {
             "name": "setWinningNumber",
             "outputs": [],
             "stateMutability": "payable",
+            "type": "function"
+        },
+        {
+            "inputs": [],
+            "name": "singleDigitWinnings",
+            "outputs": [
+                {
+                    "internalType": "uint256",
+                    "name": "",
+                    "type": "uint256"
+                }
+            ],
+            "stateMutability": "view",
             "type": "function"
         },
         {

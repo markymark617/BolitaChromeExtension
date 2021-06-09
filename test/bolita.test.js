@@ -278,7 +278,7 @@ contract("Bolita", ([owner, user1]) => {
             const user1BalanceAfterWinning = await web3.eth.getBalance(user1);
             
             //user1 should NOT receive winnings
-            assert.equal((user1BalanceAfterWinning).toString(),
+            assert.equal((user1BalanceBeforeWinning).toString(),
             user1BalanceAfterWinning.toString()
 
             );
