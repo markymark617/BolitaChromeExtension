@@ -4,7 +4,7 @@
 
 Players bet on the last 3 digits of the day's positive Covid-19 cases
 
-Bet amount defaults to 5 finney sent as msg.value
+Bet amount defaults to 5 finney (.005 ETH) sent as msg.value
 
 At 15:00 the application will get the latest Covid-19 data, and set the last 3 digits as the winning numbers, at which point:
 
